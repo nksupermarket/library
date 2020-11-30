@@ -72,8 +72,29 @@ addNewBtn.forEach((btn) => {
   });
 });
 
+let n = 0;
+const modalSequence = document.querySelectorAll(".modal-sequence");
 window.onclick = function (e) {
   if (e.target == modal) {
     modal.style.display = "none";
+    resetModal();
+    document.forms["new-book"].reset();
   }
 };
+
+function resetModal() {
+  const currentModal = document.querySelector(".active-modal");
+  currentModal.classList.remove("active-modal");
+  const firstModal = document.getElementById("first-modal");
+  firstModal.classList.add("active-modal");
+  n = 0;
+}
+const nextModalBtns = document.querySelectorAll(".next-modal");
+nextModalBtns.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const currentModal = document.querySelectorAll(".modal-sequence")[n];
+    const nextModal = document.querySelectorAll(".modal-sequence")[++n];
+    currentModal.classList.toggle("active-modal");
+    nextModal.classList.toggle("active-modal");
+  });
+});
