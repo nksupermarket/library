@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap"
+      rel="stylesheet"
+    />
+    <title>Library app</title>
+  </head>
+  <body>
+    <img
+      src="07.png"
+      alt="abstract illustration of lightbulbs"
+      id="corner-right-img"
+    />
+    <nav class="menu">
+      <div id="logo">
+        <img
+          src="left-ear.png"
+          alt="abstract illustration of flying ears"
+          id="logo-left-ear"
+        />
+        <img
+          src="right-ear.png"
+          alt="abstract illustration of flying ears"
+          id="logo-right-ear"
+        />
+        <h1 class="title menu-font">myLibrary</h1>
+      </div>
+      <ul class="main-links lato menu-font">
+        <li class="active">all</li>
+        <li>currently reading</li>
+        <li>haven't started</li>
+        <li>finished</li>
+        <li>wishlist</li>
+      </ul>
+      <img src="02.png" alt="books flying out of a pot" id="menu-illus" />
+    </nav>
+    <div id="search">
+      <input type="text" name="search" id="search" />
+    </div>
+    <div class="content">
+      <div class="section" id="section-1">
+        <div class="section-header">
+          <h2 class="section-title lato"">currently reading</h2>
+          <div class="add-new-btn lato">
+            <span class="plus-sym">+</span
+            ><span class="add-new-btn-text">add new book</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal">
+      <form class="new-book">
+        <label name="book-title" class="form-label">Book Title</label>
+        <input
+          type="text"
+          name="book-title"
+          id="book-title"
+          class="form-input"
+        />
+
+        <label name="author" class="form-label">Author</label>
+        <input type="text" name="author" id="book-author" class="form-input" />
+
+        <label name="pages-read" class="form-label">Pages Read</label>
+        <input
+          type="number"
+          name="pages-read"
+          id="book-pages"
+          class="form-input"
+        />
+        <div class="read-radio-btns">
+          <input
+            type="radio"
+            name="read"
+            id="book-status"
+            value="In Progress"
+          />
+          <label name="read" class="form-label">In Progress</label>
+
+          <input type="radio" name="read" value="Finished" />
+          <label name="read" class="form-label">Finished</label>
+        </div>
+
+        <input type="button" id="submit-book" value="Submit" />
+      </form>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>
