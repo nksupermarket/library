@@ -32,7 +32,7 @@
         />
         <h1 class="title main-font">myLibrary</h1>
       </div>
-      <ul class="main-links lato main-font">
+      <ul class="main-links  main-font">
         <li class="active">all</li>
         <li>currently reading</li>
         <li>haven't started</li>
@@ -47,8 +47,8 @@
     <div class="content">
       <div class="section" id="section-1">
         <div class="section-header">
-          <h2 class="section-title lato"">currently reading</h2>
-          <div class="add-new-btn lato">
+          <h2 class="section-title "">currently reading</h2>
+          <div class="add-new-btn ">
             <span class="plus-sym">+</span
             ><span class="add-new-btn-text">add new book</span>
           </div>
@@ -118,28 +118,103 @@
         <div id="third-modal" class="modal-sequence">
           <div class="form-container">
             <h3 class="book-form-title">Design your book!</h3>
-            <label class="form-label radio-container">currently reading
-              <input
-                type="radio"
-                name="read"
-                class="book-status"
-                value="currently reading"
-              />
-              <span class="checkmark" id="green-light"></span>
-            </label>
-            <label class="form-label radio-container">haven't started
-              <input type="radio" name="read" class="book-status"value="haven't started'" />
-              <span class="checkmark" id="yellow-light"></span>
-            </label>
-            <label class="form-label radio-container">wishlist
-              <input type="radio" name="read" class="book-status"value="wishlist" />
-              <span class="checkmark" id="star"><i class="fas fa-star"></i></span>
-            </label>
-            <label class="form-input radio-container">finished
-              <input type="radio" name="read" class="book-status"value="finished" />
-              <span class="checkmark" id="check"><i class="fas fa-check"></i></span>
-            </label>
-            <input type="button" id="submit-book" class="next-modal" value="Submit" />
+            <div id="cover-color">
+              <p>Select a color for your cover</p>
+              <label class="form-label radio-container">orange yellow crayola
+                <input
+                  type="radio"
+                  name="cover-color"
+                  class="color-radio"
+                  value="orange yellow crayola"
+                />
+                <span class="checkmark sample-color" id="orange-yellow-crayola"></span>
+              </label>
+              <label class="form-label radio-container">opal
+                <input
+                  type="radio"
+                  name="cover-color"
+                  class="color-radio"
+                  value="opal"
+                />
+                <span class="checkmark sample-color" id="opal"></span>
+              </label>
+              <label class="form-label radio-container">maximum blue purple
+                <input
+                  type="radio"
+                  name="cover-color"
+                  class="color-radio"
+                  value="maximum blue purple"
+                />
+                <span class="checkmark sample-color" id="maximum-blue-purple"></span>
+              </label>
+              <label class="form-label radio-container">dark sea green
+                <input
+                  type="radio"
+                  name="cover-color"
+                  class="color-radio"
+                  value="dark sea green"
+                />
+                <span class="checkmark sample-color" id="dark-sea-green"></span>
+              </label>
+              <label class="form-label radio-container">magnolia
+                <input
+                  type="radio"
+                  name="cover-color"
+                  class="color-radio"
+                  value="magnolia"
+                />
+                <span class="checkmark sample-color" id="magnolia"></span>
+              </label>
+            </div>
+            <div id="accent-color">
+              <p>Select an accent-color</p>
+              <label class="form-label radio-container">orange yellow crayola
+                <input
+                  type="radio"
+                  name="accent-color"
+                  class="color-radio"
+                  value="orange yellow crayola"
+                />
+                <span class="checkmark sample-color" id="orange-yellow-crayola"></span>
+              </label>
+              <label class="form-label radio-container">opal
+                <input
+                  type="radio"
+                  name="accent-color"
+                  class="color-radio"
+                  value="opal"
+                />
+                <span class="checkmark sample-color" id="opal"></span>
+              </label>
+              <label class="form-label radio-container">maximum blue purple
+                <input
+                  type="radio"
+                  name="accent-color"
+                  class="color-radio"
+                  value="maximum blue purple"
+                />
+                <span class="checkmark sample-color" id="maximum-blue-purple"></span>
+              </label>
+              <label class="form-label radio-container">dark sea green
+                <input
+                  type="radio"
+                  name="accent-color"
+                  class="color-radio"
+                  value="dark sea green"
+                />
+                <span class="checkmark sample-color" id="dark-sea-green"></span>
+              </label>
+              <label class="form-label radio-container">magnolia
+                <input
+                  type="radio"
+                  name="accent-color"
+                  class="color-radio"
+                  value="magnolia"
+                />
+                <span class="checkmark sample-color" id="magnolia"></span>
+              </label>
+            </div>
+            <input type="button" id="submit-book" value="Submit" />
           </div>
         </div>
       </form>

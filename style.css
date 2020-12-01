@@ -7,6 +7,7 @@
 }
 html {
   font-size: 10px;
+  font-family: lato, sans-serif;
 }
 body {
   position: relative;
@@ -24,9 +25,7 @@ body {
 .main-font {
   color: var(--main-font);
 }
-.lato {
-  font-family: "lato", sans-serif;
-}
+
 #corner-right-img {
   height: 250px;
   position: absolute;
@@ -78,11 +77,11 @@ body {
   font-weight: 500;
   font-size: 2rem;
   opacity: 0.5;
-  color: var(--menu-font);
+  color: var(--main-font);
 }
 .menu ul li.active {
   opacity: 1;
-  border-bottom: 1px solid var(--menu-font);
+  border-bottom: 1px solid var(--main-font);
   border-bottom-right-radius: 100px 5px;
   border-bottom-left-radius: 100px 5px;
 }
@@ -203,8 +202,8 @@ body {
   width: 270px;
 }
 #third-modal {
-  height: 400px;
-  width: 300px;
+  height: 450px;
+  width: 600px;
 }
 .form-container {
   display: grid;
@@ -213,6 +212,7 @@ body {
 .form-container div {
   margin-bottom: 10px;
 }
+#submit-book,
 .next-modal {
   display: block;
   border: none;
@@ -228,6 +228,7 @@ body {
   background-color: var(--add-new-btn);
   margin-top: 15px;
 }
+#submit-book:hover,
 .next-modal:hover {
   filter: brightness(1.05);
 }
@@ -270,7 +271,7 @@ div.read-radio-btns {
 .radio-container:hover input ~ .checkmark {
   opacity: 1;
 }
-.radio-container input:checked ~ .checkmark {
+.read-radio-btns .radio-container input:checked ~ .checkmark {
   opacity: 1;
   transform: scale(1.2);
   filter: brightness(1.1);
@@ -300,7 +301,6 @@ div.read-radio-btns {
 #check {
   color: #15e38a;
 }
-
 #book-pages {
   -moz-appearance: textfield;
   width: 30%;
@@ -310,6 +310,64 @@ div.read-radio-btns {
 #book-pages::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+#third-modal .form-container {
+  grid-template-areas:
+    "title title"
+    "cover-color accent-color"
+    "submit submit";
+  width: 450px;
+}
+#third-modal h3 {
+  grid-area: title;
+}
+#third-modal input[type="button"] {
+  grid-area: submit;
+  width: 80px;
+  height: 35px;
+}
+#cover-color {
+  grid-area: cover-color;
+}
+#accent-color {
+  grid-area: accent-color;
+}
+#accent-color .radio-container,
+#cover-color .radio-container {
+  margin-bottom: 30px;
+}
+#accent-color .checkmark,
+#cover-color .checkmark {
+  opacity: 1;
+}
+#third-modal .radio-container:hover input ~ .checkmark {
+  transform: scale(1.2);
+}
+#third-modal .radio-container input:checked ~ .checkmark {
+  transform: scale(1.3);
+}
+.sample-color {
+  top: -3px;
+  left: -25px;
+  width: 30px;
+  height: 30px;
+  background: black;
+}
+#orange-yellow-crayola {
+  background-color: #f0ce7f;
+}
+#magnolia {
+  background-color: #f5efff;
+  border: 1px dotted gray;
+}
+#dark-sea-green {
+  background-color: #96bc8a;
+}
+#maximum-blue-purple {
+  background-color: #b1affe;
+}
+#opal {
+  background-color: #afd4cf;
 }
 @media screen and (max-width: 1297px) {
   #search {

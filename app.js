@@ -73,11 +73,14 @@ addNewBtn.forEach((btn) => {
 });
 window.onclick = function (e) {
   if (e.target == modal) {
-    modal.style.display = "none";
-    resetModal();
-    document.forms["new-book"].reset();
+    resetModalAndForm();
   }
 };
+function resetModalAndForm() {
+  modal.style.display = "none";
+  resetModal();
+  document.forms["new-book"].reset();
+}
 let n = 0;
 const modalSequence = document.querySelectorAll(".modal-sequence");
 const nextModalBtns = document.querySelectorAll(".next-modal");
@@ -97,3 +100,4 @@ function resetModal() {
   firstModal.classList.add("active-modal");
   n = 0;
 }
+submit.addEventListener("click", resetModalAndForm);
