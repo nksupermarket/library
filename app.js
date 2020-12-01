@@ -71,9 +71,6 @@ addNewBtn.forEach((btn) => {
     modal.style.cssText = "display: grid; place-items: center;";
   });
 });
-
-let n = 0;
-const modalSequence = document.querySelectorAll(".modal-sequence");
 window.onclick = function (e) {
   if (e.target == modal) {
     modal.style.display = "none";
@@ -81,14 +78,8 @@ window.onclick = function (e) {
     document.forms["new-book"].reset();
   }
 };
-
-function resetModal() {
-  const currentModal = document.querySelector(".active-modal");
-  currentModal.classList.remove("active-modal");
-  const firstModal = document.getElementById("first-modal");
-  firstModal.classList.add("active-modal");
-  n = 0;
-}
+let n = 0;
+const modalSequence = document.querySelectorAll(".modal-sequence");
 const nextModalBtns = document.querySelectorAll(".next-modal");
 nextModalBtns.forEach((btn) => {
   btn.addEventListener("click", () => {
@@ -98,3 +89,11 @@ nextModalBtns.forEach((btn) => {
     nextModal.classList.toggle("active-modal");
   });
 });
+
+function resetModal() {
+  const currentModal = document.querySelector(".active-modal");
+  currentModal.classList.remove("active-modal");
+  const firstModal = document.getElementById("first-modal");
+  firstModal.classList.add("active-modal");
+  n = 0;
+}

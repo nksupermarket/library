@@ -199,8 +199,8 @@ body {
   width: 300px;
 }
 #second-modal {
-  height: 400px;
-  width: 300px;
+  height: 370px;
+  width: 270px;
 }
 #third-modal {
   height: 400px;
@@ -236,6 +236,7 @@ label {
   font-family: lato, sans-serif;
   display: block;
   color: var(--main-font);
+  margin-bottom: 5px;
 }
 .modal-sequence {
   display: none;
@@ -243,8 +244,72 @@ label {
 .active-modal {
   display: flex;
 }
-.read-radio-btns label {
-  display: inline;
+div.read-radio-btns {
+  margin-bottom: 10px;
+}
+.radio-container {
+  display: block;
+  position: relative;
+  cursor: pointer;
+  padding-left: 15px;
+  margin-bottom: 10px;
+}
+.radio-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0.5;
+}
+.radio-container:hover input ~ .checkmark {
+  opacity: 1;
+}
+.radio-container input:checked ~ .checkmark {
+  opacity: 1;
+  transform: scale(1.2);
+  filter: brightness(1.1);
+}
+#green-light,
+#yellow-light {
+  top: 6px;
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+}
+#green-light {
+  background-color: #59e959;
+}
+#yellow-light {
+  background-color: tomato;
+}
+#star,
+#check {
+  left: -2px;
+  font-size: 1.2rem;
+  top: 4px;
+}
+#star {
+  color: gold;
+}
+#check {
+  color: #15e38a;
+}
+
+#book-pages {
+  -moz-appearance: textfield;
+  width: 30%;
+  margin-bottom: 15px;
+}
+#book-pages::-webkit-outer-spin-button,
+#book-pages::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 @media screen and (max-width: 1297px) {
   #search {

@@ -9,6 +9,7 @@
       href="https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap"
       rel="stylesheet"
     />
+    <script src="https://kit.fontawesome.com/92c06801db.js" crossorigin="anonymous"></script>
     <title>Library app</title>
   </head>
   <body>
@@ -75,50 +76,69 @@
             <input type="button" class="next-modal" value="Next">
           </div>
         </div>
-      <div id="second-modal" class="modal-sequence">
-        <h3 class="book-form-title">Where are you at?</h3>
-        <div class="form-container">
-          <div class="read-radio-btns">
-            <div>
+        <div id="second-modal" class="modal-sequence">
+          <h3 class="book-form-title">Where ya at?</h3>
+          <div class="form-container">
+            <div class="read-radio-btns">
+              <label class="form-label radio-container">currently reading
+                <input
+                  type="radio"
+                  name="read"
+                  class="book-status"
+                  value="currently reading"
+                />
+                <span class="checkmark" id="green-light"></span>
+              </label>
+              <label class="form-label radio-container">haven't started
+                <input type="radio" name="read" class="book-status"value="haven't started'" />
+                <span class="checkmark" id="yellow-light"></span>
+              </label>
+              <label class="form-label radio-container">wishlist
+                <input type="radio" name="read" class="book-status"value="wishlist" />
+                <span class="checkmark" id="star"><i class="fas fa-star"></i></span>
+              </label>
+              <label class="form-input radio-container">finished
+                <input type="radio" name="read" class="book-status"value="finished" />
+                <span class="checkmark" id="check"><i class="fas fa-check"></i></span>
+              </label>
+            </div>
+
+              <label name="pages-read" class="form-label">Pages Read</label>
+              <br>
+              <input
+                type="number"
+                name="pages-read"
+                id="book-pages"
+                class="form-input"
+              />
+      
+            <input type="button" class="next-modal" value="Next">
+          </div>
+        </div>
+        <div id="third-modal" class="modal-sequence">
+          <div class="form-container">
+            <h3 class="book-form-title">Design your book!</h3>
+            <label class="form-label radio-container">currently reading
               <input
                 type="radio"
                 name="read"
                 class="book-status"
                 value="currently reading"
               />
-              <label name="read" class="form-label">currently reading</label>
-            </div>
-            <div>
+              <span class="checkmark" id="green-light"></span>
+            </label>
+            <label class="form-label radio-container">haven't started
               <input type="radio" name="read" class="book-status"value="haven't started'" />
-              <label name="read" class="form-label">haven't started</label>
-            </div>
-            <div>
+              <span class="checkmark" id="yellow-light"></span>
+            </label>
+            <label class="form-label radio-container">wishlist
               <input type="radio" name="read" class="book-status"value="wishlist" />
-              <label name="read" class="form-label">wishlist</label>
-            </div>
-            <div>
+              <span class="checkmark" id="star"><i class="fas fa-star"></i></span>
+            </label>
+            <label class="form-input radio-container">finished
               <input type="radio" name="read" class="book-status"value="finished" />
-              <label name="read" class="form-label">finished</label>
-            </div>
-          </div>
-          <div id="pages-read">
-            <label name="pages-read" class="form-label">Pages Read</label>
-            <input
-              type="number"
-              name="pages-read"
-              id="book-pages"
-              class="form-input"
-            />
-          </div>
-          <input type="button" class="next-modal" value="Next">
-        </div>
-      </div>
-        <div id="third-modal" class="modal-sequence">
-          <h3 class="book-form-title">Where are you at?</h3>
-          <div class="form-container">
-            <div>
-              <label name="color-select" class="form-label">Select a color for your cover</label>
-            </div>
+              <span class="checkmark" id="check"><i class="fas fa-check"></i></span>
+            </label>
             <input type="button" id="submit-book" class="next-modal" value="Submit" />
           </div>
         </div>
