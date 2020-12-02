@@ -3,7 +3,7 @@
   --main-font: #2c514c;
   --menu-font: #6e69fd;
   --section-font: #87b37a;
-  --add-new-btn: #e6af2e;
+  --add-new-btn: #e54b4b;
 }
 html {
   font-size: 10px;
@@ -14,7 +14,16 @@ body {
   overflow: hidden;
   margin: 0;
   padding: 0;
-  background-color: var(--background);
+  background-color: #fff;
+  background-image: linear-gradient(
+      90deg,
+      transparent 300px,
+      #abced4 300px,
+      #abced4 301px,
+      transparent 301px
+    ),
+    linear-gradient(#eee 0.1em, transparent 0.1em);
+  background-size: 100% 1.2em;
   display: grid;
   grid-template-areas:
     "menu search"
@@ -25,12 +34,18 @@ body {
 .main-font {
   color: var(--main-font);
 }
-
+.drawn-border {
+  border-top-left-radius: 255px 15px;
+  border-top-right-radius: 15px 225px;
+  border-bottom-right-radius: 225px 15px;
+  border-bottom-left-radius: 15px 255px;
+}
 #corner-right-img {
   height: 250px;
   position: absolute;
+  transform: rotate(230deg);
   right: -10px;
-  top: -16px;
+  top: -10px;
   z-index: -1;
 }
 .menu {
@@ -82,8 +97,8 @@ body {
 .menu ul li.active {
   opacity: 1;
   border-bottom: 1px solid var(--main-font);
-  border-bottom-right-radius: 100px 5px;
-  border-bottom-left-radius: 100px 5px;
+  border-bottom-right-radius: 50px 5px;
+  border-bottom-left-radius: 50px 5px;
 }
 #menu-illus {
   height: 300px;
@@ -101,14 +116,21 @@ body {
   max-width: 500px;
   height: 40px;
   margin: 0 auto;
-  border-radius: 50px;
+  border: 2px solid var(--main-font);
+}
+#search:hover {
+  box-shadow: 2px 2px var(--main-font);
 }
 #search input {
+  display: block;
   width: 90%;
   border: none;
   padding: 0;
   top: 0;
   justify-self: center;
+}
+#search:hover input {
+  box-shadow: none;
 }
 .content {
   grid-area: content;
@@ -129,7 +151,7 @@ body {
   margin-top: 8px;
 }
 .add-new-btn {
-  height: 20px;
+  height: 22px;
   width: 20px;
   line-height: 20px;
   margin: -8px 0 0 1rem;
@@ -140,6 +162,7 @@ body {
   display: flex;
   align-items: center;
   transition: width 0.4s ease-in;
+  box-sizing: border-box;
 }
 .plus-sym {
   font-weight: 900;
@@ -181,11 +204,8 @@ body {
   align-items: center;
   background-color: var(--background);
   grid-template-rows: 1fr 1fr 1fr;
-  border-top-left-radius: 255px 15px;
-  border-top-right-radius: 15px 225px;
-  border-bottom-right-radius: 225px 15px;
-  border-bottom-left-radius: 15px 255px;
   border: 3px solid var(--main-font);
+  box-shadow: 2px 2px var(--main-font);
 }
 .form-container input[type="text"],
 input[type="number"] {
@@ -201,7 +221,7 @@ input[type="number"]:focus {
   border: 2px solid #61a7e8;
 }
 .form-container input.invalid {
-  border: 2px solid #e86161;
+  border: 2px solid #e54b4b;
 }
 input[type="radio"] .invalid::before {
   content: "i love chinese food";
@@ -231,26 +251,47 @@ input[type="radio"] .invalid::before {
 .form-container div {
   margin-bottom: 10px;
 }
-#submit-book,
+.back-modal,
 .next-modal {
-  display: block;
+  display: inline-block;
   border: none;
   height: 2.5rem;
   width: 6rem;
   font-weight: 500;
   cursor: pointer;
-  border-top-left-radius: 255px 15px;
-  border-top-right-radius: 15px 225px;
-  border-bottom-right-radius: 225px 15px;
-  border-bottom-left-radius: 15px 255px;
-  color: white;
-  background-color: var(--add-new-btn);
   margin-top: 15px;
 }
-#submit-book:hover,
-.next-modal:hover {
-  filter: brightness(1.05);
+.next-modal {
+  color: white;
+  background-color: var(--add-new-btn);
 }
+.back-modal {
+  color: #87b37a;
+  border: 2px solid #87b37a;
+  margin-right: 10px;
+}
+.next-modal:hover,
+.back-modal:hover {
+  animation: btn-shake 0.2s infinite;
+}
+@keyframes btn-shake {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(2.5deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+  75% {
+    transform: rotate(-2.5deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
 label {
   font-size: 1.6rem;
   font-family: lato, sans-serif;
@@ -340,8 +381,10 @@ div.read-radio-btns {
 #third-modal h3 {
   grid-area: title;
 }
-#third-modal input[type="button"] {
+#third-modal .btn-container {
   grid-area: submit;
+}
+#third-modal input[type="button"] {
   width: 80px;
   height: 35px;
   margin-top: 0;

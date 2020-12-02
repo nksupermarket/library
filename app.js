@@ -6,22 +6,18 @@ function Book(title, author, pages, status) {
   this.pages = pages;
   this.status = status;
 }
-
+const newBookForm = document.querySelector(".new-book");
 const submit = document.getElementById("submit-book");
 submit.addEventListener("click", addBookToLibrary);
 function addBookToLibrary() {
-  const bookTitle = document.getElementById("book-title").value;
-  const bookAuthor = document.getElementById("book-author").value;
-  const bookPages = document.getElementById("book-pages").value;
-  const bookStatus = document.getElementById("book-status").value;
+  const bookTitle = newBookForm.getElementById("book-title").value;
+  const bookAuthor = newBookForm.getElementById("book-author").value;
+  const bookPages = newBookForm.getElementById("book-pages").value;
+  const bookStatus = newBookForm.getElementById("book-status").value;
   const newBook = new Book(bookTitle, bookAuthor, bookPages, bookStatus);
 
   myLibrary.push(newBook);
 }
-// for (i=0; i<myLibrary.length; i++) {
-//   const book = myLibrary[i]
-
-// }
 
 const addNewBtn = document.querySelectorAll(".add-new-btn");
 
@@ -81,32 +77,35 @@ function resetModalAndForm() {
   resetModal();
   document.forms["new-book"].reset();
 }
-const modalSequence = document.querySelectorAll(".modal-sequence");
-const nextModalBtns = document.querySelectorAll(".next-modal");
+const modalSequence = newBookForm.querySelectorAll(".modal-sequence");
+const nextModalBtns = newBookForm.querySelectorAll(".next-modal");
 let n = 0;
 nextModalBtns.forEach((btn) => {
   btn.addEventListener("click", () => {
-    const currentModal = document.querySelectorAll(".modal-sequence")[n];
+    const currentModal = newBookForm.querySelectorAll(".modal-sequence")[n];
     if (validateForm() === true) {
-      const nextModal = document.querySelectorAll(".modal-sequence")[++n];
-      currentModal.classList.toggle("active-modal");
-      nextModal.classList.toggle("active-modal");
+      if (btn.value === "Submit") {
+        resetModalAndForm();
+        return;
+      }
+      const nextModal = newBookForm.querySelectorAll(".modal-sequence")[++n];
+      currentModal.classList.remove("active-modal");
+      nextModal.classList.add("active-modal");
     } else {
       incompleteFields(currentModal);
     }
   });
 });
-submit.addEventListener("click", () => {
-  if (validateForm() === true) {
-    resetModalAndForm();
-  } else {
-    const activeModal = document.querySelector(".active-modal");
-    incompleteFields(activeModal);
-  }
+const backModalBtns = newBookForm.querySelectorAll(".back-modal");
+backModalBtns.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const currentModal = newBookForm.querySelectorAll(".modal-sequence")[n];
+    const prevModal = newBookForm.querySelectorAll(".modal-sequence")[--n];
+
+    currentModal.classList.remove("active-modal");
+    prevModal.classList.add("active-modal");
+  });
 });
-function validateForm() {
-  if (validateRadio() && validateText()) return true;
-}
 function incompleteFields(modal) {
   modal.animate(
     [
@@ -131,40 +130,24 @@ function resetModal() {
   invalids.forEach((field) => field.classList.remove("invalid"));
   n = 0;
 }
-
+function validateForm() {
+  if (validateRadio() && validateText()) return true;
+}
 function validateRadio() {
-  let valid = false;
-  const listOfRadio = [];
+  let valid = true;
+  const countChecked = 0;
+  const setNames = new Set();
   const activeModal = document.querySelector(".active-modal");
   const radioBtns = activeModal.querySelectorAll("input[type=radio]");
-  for (i = 0; i < radioBtns.length; i++) {
-    const radioStatus = {
-      name: radioBtns[i].name,
-      checked: radioBtns[i].checked,
-    };
-    listOfRadio.push(radioStatus);
+
+  for (let i = 0; i < radioBtns.length; i++) {
+    setNames.add(radioBtns[i].name);
+    if (radioBtns[i].checked) countChecked++;
   }
 
-  const countNames = listOfRadio.reduce(
-    (total, radio) => {
-      if (!total.set[radio.name]) {
-        total.set[radio.name] = 1;
-        total.count++;
-      }
-      return total;
-    },
-    { set: {}, count: 0 }
-  ).count;
-
-  const countChecked = listOfRadio.filter((e) => {
-    return e.checked === true;
-  });
-
-  if (countChecked.length === countNames) valid = true;
-
+  if (countChecked != setNames.size) valid = false;
   return valid;
 }
-
 function validateText() {
   let valid = true;
   const activeModal = document.querySelector(".active-modal");
