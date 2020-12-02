@@ -81,23 +81,103 @@ function resetModalAndForm() {
   resetModal();
   document.forms["new-book"].reset();
 }
-let n = 0;
 const modalSequence = document.querySelectorAll(".modal-sequence");
 const nextModalBtns = document.querySelectorAll(".next-modal");
+let n = 0;
 nextModalBtns.forEach((btn) => {
   btn.addEventListener("click", () => {
     const currentModal = document.querySelectorAll(".modal-sequence")[n];
-    const nextModal = document.querySelectorAll(".modal-sequence")[++n];
-    currentModal.classList.toggle("active-modal");
-    nextModal.classList.toggle("active-modal");
+    if (validateForm() === true) {
+      const nextModal = document.querySelectorAll(".modal-sequence")[++n];
+      currentModal.classList.toggle("active-modal");
+      nextModal.classList.toggle("active-modal");
+    } else {
+      incompleteFields(currentModal);
+    }
   });
 });
-
+submit.addEventListener("click", () => {
+  if (validateForm() === true) {
+    resetModalAndForm();
+  } else {
+    const activeModal = document.querySelector(".active-modal");
+    incompleteFields(activeModal);
+  }
+});
+function validateForm() {
+  if (validateRadio() && validateText()) return true;
+}
+function incompleteFields(modal) {
+  modal.animate(
+    [
+      { transform: "rotate(0deg)" },
+      { transform: "rotate(5deg)" },
+      { transform: "rotate(0deg)" },
+      { transform: "rotate(-5deg)" },
+      { transform: "rotate(0deg)" },
+    ],
+    {
+      duration: 100,
+      iterations: 4,
+    }
+  );
+}
 function resetModal() {
-  const currentModal = document.querySelector(".active-modal");
-  currentModal.classList.remove("active-modal");
+  const activeModal = document.querySelector(".active-modal");
+  activeModal.classList.remove("active-modal");
   const firstModal = document.getElementById("first-modal");
   firstModal.classList.add("active-modal");
+  const invalids = activeModal.querySelectorAll(".invalid");
+  invalids.forEach((field) => field.classList.remove("invalid"));
   n = 0;
 }
-submit.addEventListener("click", resetModalAndForm);
+
+function validateRadio() {
+  let valid = false;
+  const listOfRadio = [];
+  const activeModal = document.querySelector(".active-modal");
+  const radioBtns = activeModal.querySelectorAll("input[type=radio]");
+  for (i = 0; i < radioBtns.length; i++) {
+    const radioStatus = {
+      name: radioBtns[i].name,
+      checked: radioBtns[i].checked,
+    };
+    listOfRadio.push(radioStatus);
+  }
+
+  const countNames = listOfRadio.reduce(
+    (total, radio) => {
+      if (!total.set[radio.name]) {
+        total.set[radio.name] = 1;
+        total.count++;
+      }
+      return total;
+    },
+    { set: {}, count: 0 }
+  ).count;
+
+  const countChecked = listOfRadio.filter((e) => {
+    return e.checked === true;
+  });
+
+  if (countChecked.length === countNames) valid = true;
+
+  return valid;
+}
+
+function validateText() {
+  let valid = true;
+  const activeModal = document.querySelector(".active-modal");
+  const textInputs = activeModal.querySelectorAll(
+    "input[type=text], input[type=number]"
+  );
+  for (i = 0; i < textInputs.length; i++) {
+    if (textInputs[i].hasAttribute("required")) {
+      if (textInputs[i].type === "text" && !textInputs[i].value) {
+        textInputs[i].classList.add("invalid");
+        valid = false;
+      }
+    }
+  }
+  return valid;
+}

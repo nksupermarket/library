@@ -67,11 +67,13 @@
                 name="book-title"
                 id="book-title-input"
                 class="form-input"
+                oninput="this.classList.remove('invalid')"
+                required
               />
             </div>
             <div id="book-author">
               <label name="author" class="form-label">Author</label>
-              <input type="text" name="author" id="book-author-input" class="form-input" />
+              <input type="text" name="author" id="book-author-input" class="form-input" oninput="this.classList.remove('invalid')" required/>
             </div>
             <input type="button" class="next-modal" value="Next">
           </div>
@@ -86,11 +88,12 @@
                   name="read"
                   class="book-status"
                   value="currently reading"
+                  required
                 />
                 <span class="checkmark" id="green-light"></span>
               </label>
               <label class="form-label radio-container">haven't started
-                <input type="radio" name="read" class="book-status"value="haven't started'" />
+                <input type="radio" name="read" class="book-status"value="haven't started'" required/>
                 <span class="checkmark" id="yellow-light"></span>
               </label>
               <label class="form-label radio-container">wishlist
@@ -103,7 +106,7 @@
               </label>
             </div>
 
-              <label name="pages-read" class="form-label">Pages Read</label>
+              <label name="pages-read" class="form-label">Pages Read (optional)</label>
               <br>
               <input
                 type="number"
@@ -126,6 +129,7 @@
                   name="cover-color"
                   class="color-radio"
                   value="orange yellow crayola"
+                  required
                 />
                 <span class="checkmark sample-color" id="orange-yellow-crayola"></span>
               </label>
@@ -174,6 +178,7 @@
                   name="accent-color"
                   class="color-radio"
                   value="orange yellow crayola"
+                  required
                 />
                 <span class="checkmark sample-color" id="orange-yellow-crayola"></span>
               </label>
