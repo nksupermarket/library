@@ -86,16 +86,22 @@ addNewBtn.forEach((btn) => {
     for (let i = 0; i < strArr.length; i++) {
       text.innerHTML += `<span>${strArr[i]}</span>`;
     }
-
     let char = 0;
     let timer = setInterval(onTick, 30);
 
     function onTick() {
+      btn.addEventListener("mouseleave", () => {
+        complete();
+        return;
+      });
       const letter = text.querySelectorAll("span")[char];
+      if (!letter) {
+        complete();
+        return;
+      }
       letter.classList.add("fade-in");
       char++;
       text.style.opacity = "1";
-      btn.addEventListener("mouseleave", complete);
 
       if (char === strArr.length) {
         complete();
