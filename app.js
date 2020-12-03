@@ -1,24 +1,79 @@
 let myLibrary = [];
 
-function Book(title, author, pages, status) {
+function Book(title, author, pages, status, cover, accent) {
   this.title = title;
   this.author = author;
   this.pages = pages;
   this.status = status;
+  this.cover = cover;
+  this.accent = accent;
 }
 const newBookForm = document.querySelector(".new-book");
 const submit = document.getElementById("submit-book");
-submit.addEventListener("click", addBookToLibrary);
+submit.addEventListener("click", () => {
+  if (validateForm()) {
+    addBookToLibrary();
+    displayBook();
+  }
+});
 function addBookToLibrary() {
-  const bookTitle = newBookForm.getElementById("book-title").value;
-  const bookAuthor = newBookForm.getElementById("book-author").value;
-  const bookPages = newBookForm.getElementById("book-pages").value;
-  const bookStatus = newBookForm.getElementById("book-status").value;
-  const newBook = new Book(bookTitle, bookAuthor, bookPages, bookStatus);
+  const bookTitle = newBookForm.querySelector("input[name = book-title]").value;
+  const bookAuthor = newBookForm.querySelector("input[name = author]").value;
+  const bookPages = newBookForm.querySelector("input[name = pages-read]").value;
+  let bookStatus;
+  const readRadio = newBookForm.querySelectorAll("input[name = read]");
+  for (i = 0; i < readRadio.length; i++) {
+    if (readRadio[i].checked) bookStatus = readRadio[i].value;
+  }
+  let bookCover;
+  const coverRadio = newBookForm.querySelectorAll("input[name = cover-color]");
+  for (i = 0; i < coverRadio.length; i++) {
+    if (coverRadio[i].checked) bookCover = coverRadio[i].value;
+  }
+  let bookAccent;
+  const accentRadio = newBookForm.querySelectorAll(
+    "input[name = accent-color]"
+  );
+  for (i = 0; i < accentRadio.length; i++) {
+    if (accentRadio[i].checked) bookAccent = accentRadio[i].value;
+  }
+
+  const newBook = new Book(
+    bookTitle,
+    bookAuthor,
+    bookPages,
+    bookStatus,
+    bookCover,
+    bookAccent
+  );
 
   myLibrary.push(newBook);
 }
 
+function displayBook() {
+  for (i = 0; i < myLibrary.length; i++) {
+    const section = document.querySelector(
+      `.section[data-name = "${myLibrary[i].status}"]`
+    );
+    const bookDisplay = document.createElement("div");
+    bookDisplay.classList.add("book-display", "drawn-border");
+    bookDisplay.style.backgroundColor = `${myLibrary[i].cover}`;
+
+    const bookDisplayTitle = document.createElement("p");
+    bookDisplayTitle.classList.add("book-display-title");
+    bookDisplayTitle.textContent = myLibrary[i].title;
+
+    const bookDisplayAuthor = document.createElement("p");
+    bookDisplayAuthor.classList.add("book-display-author");
+    bookDisplayAuthor.textContent = myLibrary[i].author;
+
+    bookDisplay.appendChild(bookDisplayTitle);
+    bookDisplay.appendChild(bookDisplayAuthor);
+    // bookDisplayTitle.style.cssText = `border-left: 3px solid ${myLibrary[i].accent}`;
+
+    section.appendChild(bookDisplay);
+  }
+}
 const addNewBtn = document.querySelectorAll(".add-new-btn");
 
 addNewBtn.forEach((btn) => {
@@ -28,7 +83,7 @@ addNewBtn.forEach((btn) => {
     const strArr = str.split("");
     text.textContent = "";
 
-    for (i = 0; i < strArr.length; i++) {
+    for (let i = 0; i < strArr.length; i++) {
       text.innerHTML += `<span>${strArr[i]}</span>`;
     }
 
@@ -65,6 +120,16 @@ const modal = document.querySelector(".modal");
 addNewBtn.forEach((btn) => {
   btn.addEventListener("click", () => {
     modal.style.cssText = "display: grid; place-items: center;";
+  });
+});
+addNewBtn.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const sectionTitle = btn.previousElementSibling;
+    const readRadio = newBookForm.querySelectorAll("input[name = read]");
+    for (i = 0; i < readRadio.length; i++) {
+      if (readRadio[i].value === sectionTitle.textContent)
+        return (readRadio[i].checked = true);
+    }
   });
 });
 window.onclick = function (e) {
@@ -135,7 +200,7 @@ function validateForm() {
 }
 function validateRadio() {
   let valid = true;
-  const countChecked = 0;
+  let countChecked = 0;
   const setNames = new Set();
   const activeModal = document.querySelector(".active-modal");
   const radioBtns = activeModal.querySelectorAll("input[type=radio]");

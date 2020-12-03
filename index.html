@@ -9,7 +9,10 @@
       href="https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap"
       rel="stylesheet"
     />
-    <script src="https://kit.fontawesome.com/92c06801db.js" crossorigin="anonymous"></script>
+    <script
+      src="https://kit.fontawesome.com/92c06801db.js"
+      crossorigin="anonymous"
+    ></script>
     <title>Library app</title>
   </head>
   <body>
@@ -32,12 +35,12 @@
         />
         <h1 class="title main-font">myLibrary</h1>
       </div>
-      <ul class="main-links  main-font">
+      <ul class="main-links main-font">
         <li class="active">all</li>
         <li>currently reading</li>
         <li>haven't started</li>
-        <li>finished</li>
         <li>wishlist</li>
+        <li>finished</li>
       </ul>
       <img src="02.png" alt="books flying out of a pot" id="menu-illus" />
     </nav>
@@ -45,12 +48,39 @@
       <input type="text" name="search" id="search" />
     </div>
     <div class="content">
-      <div class="section" id="section-1">
+      <div class="section" id="section-1" data-name="currently reading">
         <div class="section-header">
-          <h2 class="section-title "">currently reading</h2>
+          <h2 class="section-title">currently reading</h2>
           <div class="add-new-btn drawn-border">
             <span class="plus-sym">+</span
-            ><span class="add-new-btn-text ">add new book</span>
+            ><span class="add-new-btn-text">add new book</span>
+          </div>
+        </div>
+      </div>
+      <div class="section" id="section-2" data-name="haven't started">
+        <div class="section-header">
+          <h2 class="section-title">haven't started</h2>
+          <div class="add-new-btn drawn-border">
+            <span class="plus-sym">+</span
+            ><span class="add-new-btn-text">add new book</span>
+          </div>
+        </div>
+      </div>
+      <div class="section" id="section-3" data-name="wishlist">
+        <div class="section-header">
+          <h2 class="section-title">wishlist</h2>
+          <div class="add-new-btn drawn-border">
+            <span class="plus-sym">+</span
+            ><span class="add-new-btn-text">add new book</span>
+          </div>
+        </div>
+      </div>
+      <div class="section" id="section-4" data-name="finished">
+        <div class="section-header">
+          <h2 class="section-title">finished</h2>
+          <div class="add-new-btn drawn-border">
+            <span class="plus-sym">+</span
+            ><span class="add-new-btn-text">add new book</span>
           </div>
         </div>
       </div>
@@ -73,16 +103,24 @@
             </div>
             <div id="book-author">
               <label name="author" class="form-label">Author</label>
-              <input type="text" name="author" id="book-author-input" class="form-input" oninput="this.classList.remove('invalid')" required/>
+              <input
+                type="text"
+                name="author"
+                id="book-author-input"
+                class="form-input"
+                oninput="this.classList.remove('invalid')"
+                required
+              />
             </div>
-            <input type="button" class="next-modal drawn-border" value="Next">
+            <input type="button" class="next-modal drawn-border" value="Next" />
           </div>
         </div>
         <div id="second-modal" class="modal-sequence drawn-border">
           <h3 class="book-form-title">Where ya at?</h3>
           <div class="form-container">
             <div class="read-radio-btns">
-              <label class="form-label radio-container">currently reading
+              <label class="form-label radio-container"
+                >currently reading
                 <input
                   type="radio"
                   name="read"
@@ -92,22 +130,47 @@
                 />
                 <span class="checkmark" id="green-light"></span>
               </label>
-              <label class="form-label radio-container">haven't started
-                <input type="radio" name="read" class="book-status"value="haven't started'" required/>
+              <label class="form-label radio-container"
+                >haven't started
+                <input
+                  type="radio"
+                  name="read"
+                  class="book-status"
+                  value="haven't started"
+                  required
+                />
                 <span class="checkmark" id="yellow-light"></span>
               </label>
-              <label class="form-label radio-container">wishlist
-                <input type="radio" name="read" class="book-status"value="wishlist" />
-                <span class="checkmark" id="star"><i class="fas fa-star"></i></span>
+              <label class="form-label radio-container"
+                >wishlist
+                <input
+                  type="radio"
+                  name="read"
+                  class="book-status"
+                  value="wishlist"
+                />
+                <span class="checkmark" id="star"
+                  ><i class="fas fa-star"></i
+                ></span>
               </label>
-              <label class="form-input radio-container">finished
-                <input type="radio" name="read" class="book-status"value="finished" />
-                <span class="checkmark" id="check"><i class="fas fa-check"></i></span>
+              <label class="form-input radio-container"
+                >finished
+                <input
+                  type="radio"
+                  name="read"
+                  class="book-status"
+                  value="finished"
+                />
+                <span class="checkmark" id="check"
+                  ><i class="fas fa-check"></i
+                ></span>
               </label>
             </div>
 
-            <label name="pages-read" class="form-label">Pages Read (optional)</label>
-            <br>
+            <label name="pages-read" class="form-label"
+              >Pages Read (optional)</label
+            >
+            <br />
             <input
               type="number"
               name="pages-read"
@@ -115,8 +178,16 @@
               class="form-input"
             />
             <div class="btn-container">
-              <input type="button" class="back-modal drawn-border" value="Back">
-              <input type="button" class="next-modal drawn-border" value="Next">
+              <input
+                type="button"
+                class="back-modal drawn-border"
+                value="Back"
+              />
+              <input
+                type="button"
+                class="next-modal drawn-border"
+                value="Next"
+              />
             </div>
           </div>
         </div>
@@ -125,56 +196,68 @@
             <h3 class="book-form-title">Design your book!</h3>
             <div id="cover-color">
               <p>Select a color for your cover</p>
-              <label class="form-label radio-container">orange yellow crayola
+              <label class="form-label radio-container"
+                >orange yellow crayola
                 <input
                   type="radio"
                   name="cover-color"
                   class="color-radio"
-                  value="orange yellow crayola"
+                  value="#f0ce7f"
                   required
                 />
-                <span class="checkmark sample-color" id="orange-yellow-crayola"></span>
+                <span
+                  class="checkmark sample-color"
+                  id="orange-yellow-crayola"
+                ></span>
               </label>
-              <label class="form-label radio-container">opal
+              <label class="form-label radio-container"
+                >opal
                 <input
                   type="radio"
                   name="cover-color"
                   class="color-radio"
-                  value="opal"
+                  value="#afd4cf"
                 />
                 <span class="checkmark sample-color" id="opal"></span>
               </label>
-              <label class="form-label radio-container">maximum blue purple
+              <label class="form-label radio-container"
+                >maximum blue purple
                 <input
                   type="radio"
                   name="cover-color"
                   class="color-radio"
-                  value="maximum blue purple"
+                  value="#b1affe"
                 />
-                <span class="checkmark sample-color" id="maximum-blue-purple"></span>
+                <span
+                  class="checkmark sample-color"
+                  id="maximum-blue-purple"
+                ></span>
               </label>
-              <label class="form-label radio-container">dark sea green
+              <label class="form-label radio-container"
+                >dark sea green
                 <input
                   type="radio"
                   name="cover-color"
                   class="color-radio"
-                  value="dark sea green"
+                  value="#96bc8a"
                 />
                 <span class="checkmark sample-color" id="dark-sea-green"></span>
               </label>
-              <label class="form-label radio-container">magnolia
+              <label class="form-label radio-container"
+                >magnolia
                 <input
                   type="radio"
                   name="cover-color"
                   class="color-radio"
-                  value="magnolia"
+                  value="#f5efff"
                 />
                 <span class="checkmark sample-color" id="magnolia"></span>
               </label>
             </div>
             <div id="accent-color">
               <p>Select an accent-color</p>
-              <label class="form-label radio-container">orange yellow crayola
+              <label class="form-label radio-container"
+                >orange yellow crayola
                 <input
                   type="radio"
                   name="accent-color"
@@ -182,9 +265,13 @@
                   value="orange yellow crayola"
                   required
                 />
-                <span class="checkmark sample-color" id="orange-yellow-crayola"></span>
+                <span
+                  class="checkmark sample-color"
+                  id="orange-yellow-crayola"
+                ></span>
               </label>
-              <label class="form-label radio-container">opal
+              <label class="form-label radio-container"
+                >opal
                 <input
                   type="radio"
                   name="accent-color"
@@ -193,16 +280,21 @@
                 />
                 <span class="checkmark sample-color" id="opal"></span>
               </label>
-              <label class="form-label radio-container">maximum blue purple
+              <label class="form-label radio-container"
+                >maximum blue purple
                 <input
                   type="radio"
                   name="accent-color"
                   class="color-radio"
                   value="maximum blue purple"
                 />
-                <span class="checkmark sample-color" id="maximum-blue-purple"></span>
+                <span
+                  class="checkmark sample-color"
+                  id="maximum-blue-purple"
+                ></span>
               </label>
-              <label class="form-label radio-container">dark sea green
+              <label class="form-label radio-container"
+                >dark sea green
                 <input
                   type="radio"
                   name="accent-color"
@@ -211,7 +303,8 @@
                 />
                 <span class="checkmark sample-color" id="dark-sea-green"></span>
               </label>
-              <label class="form-label radio-container">magnolia
+              <label class="form-label radio-container"
+                >magnolia
                 <input
                   type="radio"
                   name="accent-color"
@@ -222,8 +315,17 @@
               </label>
             </div>
             <div class="btn-container">
-              <input type="button" class="back-modal drawn-border" value="Back">
-              <input type="button" id="submit-book" value="Submit" class="next-modal drawn-border"/>
+              <input
+                type="button"
+                class="back-modal drawn-border"
+                value="Back"
+              />
+              <input
+                type="button"
+                id="submit-book"
+                value="Submit"
+                class="next-modal drawn-border"
+              />
             </div>
           </div>
         </div>
