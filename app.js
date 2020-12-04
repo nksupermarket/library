@@ -49,12 +49,22 @@ function addBookToLibrary() {
 
   myLibrary.push(newBook);
 }
-
+const lotr = new Book(
+  "lord of the rings",
+  "jr tolkein",
+  null,
+  "currently reading",
+  "#f5efff",
+  "#b1affe"
+);
+myLibrary.push(lotr);
+window.onload = displayBook();
 function displayBook() {
   for (i = 0; i < myLibrary.length; i++) {
     const section = document.querySelector(
       `.section[data-name = "${myLibrary[i].status}"]`
     );
+    const bookContainer = section.querySelector(".book-ctn");
     const bookDisplay = document.createElement("div");
     bookDisplay.classList.add("book-display", "drawn-border");
     bookDisplay.style.backgroundColor = `${myLibrary[i].cover}`;
@@ -62,6 +72,7 @@ function displayBook() {
     const bookDisplayTitle = document.createElement("p");
     bookDisplayTitle.classList.add("book-display-title");
     bookDisplayTitle.textContent = myLibrary[i].title;
+    bookDisplayTitle.style.borderLeft = `3px solid ${myLibrary[i].accent}`;
 
     const bookDisplayAuthor = document.createElement("p");
     bookDisplayAuthor.classList.add("book-display-author");
@@ -69,58 +80,12 @@ function displayBook() {
 
     bookDisplay.appendChild(bookDisplayTitle);
     bookDisplay.appendChild(bookDisplayAuthor);
-    // bookDisplayTitle.style.cssText = `border-left: 3px solid ${myLibrary[i].accent}`;
 
-    section.appendChild(bookDisplay);
+    bookContainer.appendChild(bookDisplay);
   }
 }
+
 const addNewBtn = document.querySelectorAll(".add-new-btn");
-
-addNewBtn.forEach((btn) => {
-  btn.addEventListener("mouseenter", () => {
-    const text = btn.querySelector(".add-new-btn-text");
-    const str = text.textContent;
-    const strArr = str.split("");
-    text.textContent = "";
-
-    for (let i = 0; i < strArr.length; i++) {
-      text.innerHTML += `<span>${strArr[i]}</span>`;
-    }
-    let char = 0;
-    let timer = setInterval(onTick, 30);
-
-    function onTick() {
-      btn.addEventListener("mouseleave", () => {
-        complete();
-        return;
-      });
-      const letter = text.querySelectorAll("span")[char];
-      if (!letter) {
-        complete();
-        return;
-      }
-      letter.classList.add("fade-in");
-      char++;
-      text.style.opacity = "1";
-
-      if (char === strArr.length) {
-        complete();
-        return;
-      }
-    }
-
-    function complete() {
-      clearInterval(timer);
-      timer = null;
-    }
-  });
-  btn.addEventListener("mouseleave", () => {
-    const text = btn.querySelector(".add-new-btn-text");
-    text.textContent = "add new book";
-    text.style.opacity = "0";
-  });
-});
-
 const modal = document.querySelector(".modal");
 
 addNewBtn.forEach((btn) => {

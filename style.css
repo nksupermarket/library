@@ -11,7 +11,7 @@ html {
 }
 body {
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
   margin: 0;
   padding: 0;
   background-color: #fff;
@@ -104,6 +104,7 @@ body {
   padding: 0;
   margin: 0 auto;
   list-style: none;
+  margin-top: 10px;
 }
 .menu ul li:first-child {
   margin-top: 0px;
@@ -151,6 +152,7 @@ body {
   border: none;
   padding: 0;
   top: 0;
+  outline: none;
   justify-self: center;
 }
 #search:hover input {
@@ -160,6 +162,8 @@ body {
   grid-area: content;
   margin-top: 10px;
   margin-left: 100px;
+  width: 75%;
+  overflow: hidden;
 }
 .section {
   margin-bottom: 30px;
@@ -167,7 +171,6 @@ body {
 .section-header {
   display: flex;
   align-items: center;
-  width: 75%;
   border-bottom-right-radius: 100px 5px;
   border-bottom-left-radius: 100px 5px;
   border-bottom: 2px solid var(--main-font);
@@ -177,9 +180,10 @@ body {
   font-size: 2.5rem;
   margin-top: 8px;
 }
+
 .add-new-btn {
   height: 22px;
-  width: 20px;
+  width: 21px;
   line-height: 20px;
   margin: -8px 0 0 1rem;
   font-weight: bold;
@@ -191,42 +195,42 @@ body {
   transition: width 0.4s ease-in;
   box-shadow: 2px 2px var(--add-new-btn);
   box-sizing: border-box;
+  overflow: hidden;
 }
 .plus-sym {
   font-weight: 900;
   font-size: 2rem;
-  margin-left: 2px;
+  margin: 0 3px;
 }
 .add-new-btn-text {
-  position: absolute;
-  opacity: 0;
+  white-space: nowrap;
+  margin-left: 2px;
+  margin-bottom: 2px;
   font-size: 1.4rem;
-  margin-left: 21px;
-  pointer-events: none;
 }
 .add-new-btn:hover {
   width: 115px;
-  text-align: left;
 }
-.add-new-btn-text span {
-  opacity: 0;
-  transition: all 0.1s ease-out;
-}
-.add-new-btn-text span.fade-in {
-  opacity: 1;
+.book-ctn {
+  display: flex;
 }
 .book-display {
+  margin: 20px;
   height: 200px;
   width: 150px;
   color: #333333;
   border: 2px solid var(--main-font);
+  box-shadow: 5px 5px var(--main-font);
 }
 .book-display-title {
   font-size: 2rem;
   padding-left: 5px;
+  width: 10rem;
+  margin-left: 1rem;
 }
 .book-display-author {
   font-size: 1.6rem;
+  margin-left: 1.8rem;
 }
 .modal {
   display: none;
@@ -297,6 +301,7 @@ input[type="number"]:focus {
   font-weight: 500;
   cursor: pointer;
   margin-top: 15px;
+  transition: 0.2s ease-in;
 }
 .next-modal {
   color: var(--add-new-btn);
@@ -312,6 +317,7 @@ input[type="number"]:focus {
 .next-modal:hover,
 .back-modal:hover {
   animation: btn-shake 0.2s infinite;
+  box-shadow: none;
 }
 @keyframes btn-shake {
   0% {
@@ -330,7 +336,6 @@ input[type="number"]:focus {
     transform: rotate(0deg);
   }
 }
-
 label {
   font-size: 1.6rem;
   font-family: lato, sans-serif;
@@ -370,10 +375,18 @@ div.read-radio-btns {
 .radio-container:hover input ~ .checkmark {
   opacity: 1;
 }
-.read-radio-btns .radio-container input:checked ~ .checkmark {
+.read-radio-btns input:checked ~ .checkmark {
+  transform: scale(1.4);
   opacity: 1;
-  transform: scale(1.3);
-  filter: brightness(1.1);
+}
+.read-radio-btns input:checked ~ #green-light {
+  background-color: #59e959;
+}
+.read-radio-btns input:checked ~ #yellow-light {
+  background-color: tomato;
+}
+.read-radio-btns input:checked ~ span i {
+  font-weight: 900;
 }
 #green-light,
 #yellow-light {
@@ -381,12 +394,13 @@ div.read-radio-btns {
   height: 10px;
   width: 10px;
   border-radius: 50%;
+  box-sizing: border-box;
 }
 #green-light {
-  background-color: #59e959;
+  border: 2px solid #59e959;
 }
 #yellow-light {
-  background-color: tomato;
+  border: 2px solid tomato;
 }
 #star,
 #check {
@@ -462,21 +476,35 @@ div.read-radio-btns {
   border-radius: 50%;
   background: black;
 }
-#orange-yellow-crayola {
-  background-color: #f0ce7f;
+#banana-mania {
+  background-color: #f6e3b6;
 }
-#magnolia {
-  background-color: #f5efff;
-  border: 1px dotted gray;
+#misty-rose {
+  background-color: #ffe1d6;
 }
-#dark-sea-green {
-  background-color: #96bc8a;
+#nyanza {
+  background-color: #d0e1cb;
 }
-#maximum-blue-purple {
-  background-color: #b1affe;
+#lavender-blue {
+  background-color: #d8d7ff;
 }
-#opal {
-  background-color: #afd4cf;
+#light-cyan {
+  background-color: #d7eae7;
+}
+#ocean-blue {
+  background-color: #633ccd;
+}
+#imperial-red {
+  background-color: #e54b4b;
+}
+#goldenrod {
+  background-color: #e6af2e;
+}
+#han-purple {
+  background-color: #3d36fc;
+}
+#rich-black {
+  background-color: #0d1321;
 }
 @media screen and (max-width: 1297px) {
   #search {
