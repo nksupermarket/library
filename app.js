@@ -1,19 +1,20 @@
 let myLibrary = [];
 
-function Book(title, author, pages, status, cover, accent) {
+function Book(title, author, pages, status, cover, accent, id) {
   this.title = title;
   this.author = author;
   this.pages = pages;
   this.status = status;
   this.cover = cover;
   this.accent = accent;
+  this.id = id;
 }
 const newBookForm = document.querySelector(".new-book");
 const submit = document.getElementById("submit-book");
 submit.addEventListener("click", () => {
   if (validateForm()) {
-    addBookToLibrary();
-    displayBook();
+    const book = addBookToLibrary();
+    displayBook(book);
   }
 });
 function addBookToLibrary() {
@@ -38,56 +39,106 @@ function addBookToLibrary() {
     if (accentRadio[i].checked) bookAccent = accentRadio[i].value;
   }
 
+  let id;
+  if (myLibrary.length === 0) {
+    id = 0;
+  } else {
+    id = myLibrary[myLibrary.length - 1].id + 1;
+  }
+
   const newBook = new Book(
     bookTitle,
     bookAuthor,
     bookPages,
     bookStatus,
     bookCover,
-    bookAccent
+    bookAccent,
+    id
   );
 
   myLibrary.push(newBook);
+  return newBook;
 }
-const lotr = new Book(
-  "lord of the rings",
-  "jr tolkein",
-  null,
-  "currently reading",
-  "#f5efff",
-  "#b1affe"
-);
-myLibrary.push(lotr);
-window.onload = displayBook();
-function displayBook() {
-  for (i = 0; i < myLibrary.length; i++) {
-    const section = document.querySelector(
-      `.section[data-name = "${myLibrary[i].status}"]`
-    );
-    const bookContainer = section.querySelector(".book-ctn");
-    const bookDisplay = document.createElement("div");
-    bookDisplay.classList.add("book-display", "drawn-border");
-    bookDisplay.style.backgroundColor = `${myLibrary[i].cover}`;
+for (i = 0; i < myLibrary.length; i++) {
+  displayBook(myLibrary[i]);
+}
+function displayBook(a) {
+  const section = document.querySelector(`.section[data-name = "${a.status}"]`);
+  const bookContainer = section.querySelector(".book-ctn");
+  const bookDisplay = document.createElement("div");
 
-    const bookDisplayTitle = document.createElement("p");
-    bookDisplayTitle.classList.add("book-display-title");
-    bookDisplayTitle.textContent = myLibrary[i].title;
-    bookDisplayTitle.style.borderLeft = `3px solid ${myLibrary[i].accent}`;
+  bookDisplay.classList.add("book-display", "drawn-border");
+  bookDisplay.dataset.id = a.id;
+  bookDisplay.style.backgroundColor = `${a.cover}`;
+  if (a.cover === "#2C514C") bookDisplay.style.color = "white";
 
-    const bookDisplayAuthor = document.createElement("p");
-    bookDisplayAuthor.classList.add("book-display-author");
-    bookDisplayAuthor.textContent = myLibrary[i].author;
+  const firstPage = document.createElement("div");
+  firstPage.classList.add("first-page");
 
-    bookDisplay.appendChild(bookDisplayTitle);
-    bookDisplay.appendChild(bookDisplayAuthor);
+  const bookDisplayTitle = document.createElement("p");
+  bookDisplayTitle.classList.add("book-display-title");
+  bookDisplayTitle.textContent = a.title;
+  bookDisplayTitle.style.borderLeft = `5px solid ${a.accent}`;
 
-    bookContainer.appendChild(bookDisplay);
+  const bookDisplayAuthor = document.createElement("p");
+  bookDisplayAuthor.classList.add("book-display-author");
+  bookDisplayAuthor.textContent = a.author;
+
+  firstPage.appendChild(bookDisplayTitle);
+  firstPage.appendChild(bookDisplayAuthor);
+
+  const secondPage = document.createElement("div");
+  secondPage.classList.add("second-page");
+  if (a.cover === "#FFF") {
+    secondPage.style.borderLeft = "1px solid var(--main-font)";
+  } else {
+    secondPage.style.borderLeft = "1px solid white";
   }
+
+  const bookDisplayPages = document.createElement("div");
+  bookDisplayPages.classList.add("book-display-pages");
+  bookDisplayPages.textContent = `Pages read: `;
+  const bookDisplayPagesNum = document.createElement("p");
+  bookDisplayPagesNum.classList.add("book-display-pages-num");
+  bookDisplayPagesNum.textContent = a.pages;
+  bookDisplayPages.appendChild(bookDisplayPagesNum);
+
+  const coverRadio = newBookForm.querySelector("#cover-color");
+  const bookDisplayCover = coverRadio.cloneNode(true);
+  const bookDisplayCoverText = bookDisplayCover.children[0];
+  const bookDisplayCoverLabel = bookDisplayCover.querySelectorAll("label");
+  for (i = 0; i < bookDisplayCoverLabel.length; i++) {
+    const bookDisplayCoverName = bookDisplayCoverLabel[i].querySelector("span");
+    bookDisplayCoverName.style.display = "none";
+  }
+  const bookDisplayCoverInput = bookDisplayCover.querySelectorAll("input");
+  for (i = 0; i < bookDisplayCoverInput.length; i++) {
+    if (a.cover === bookDisplayCoverInput[i].value)
+      bookDisplayCoverInput[i].checked = true;
+    bookDisplayCoverInput[i].name = `cover-color[${a.id}]`;
+  }
+  bookDisplayCoverText.textContent = "Your cover:";
+  bookDisplayCover.classList.add("book-display-cover");
+
+  secondPage.appendChild(bookDisplayPages);
+  secondPage.appendChild(bookDisplayCover);
+
+  bookDisplay.addEventListener("click", () => {
+    bookDisplay.classList.add("book-display-update");
+    bookDisplayTitle.setAttribute("contenteditable", "true");
+    bookDisplayAuthor.setAttribute("contenteditable", "true");
+    bookDisplayPagesNum.setAttribute("contenteditable", "true");
+    secondPage.style.opacity = "1";
+  });
+
+  bookDisplay.appendChild(firstPage);
+  bookDisplay.appendChild(secondPage);
+
+  bookContainer.appendChild(bookDisplay);
 }
 
 const addNewBtn = document.querySelectorAll(".add-new-btn");
 const modal = document.querySelector(".modal");
-
 addNewBtn.forEach((btn) => {
   btn.addEventListener("click", () => {
     modal.style.cssText = "display: grid; place-items: center;";
@@ -103,6 +154,7 @@ addNewBtn.forEach((btn) => {
     }
   });
 });
+
 window.onclick = function (e) {
   if (e.target == modal) {
     resetModalAndForm();
@@ -166,6 +218,7 @@ function resetModal() {
   invalids.forEach((field) => field.classList.remove("invalid"));
   n = 0;
 }
+
 function validateForm() {
   if (validateRadio() && validateText()) return true;
 }

@@ -104,6 +104,7 @@
                 name="book-title"
                 id="book-title-input"
                 class="form-input"
+                value="lord of the rings"
                 oninput="this.classList.remove('invalid')"
                 required
               />
@@ -115,6 +116,7 @@
                 name="author"
                 id="book-author-input"
                 class="form-input"
+                value="jr tolkein"
                 oninput="this.classList.remove('invalid')"
                 required
               />
@@ -183,6 +185,7 @@
               name="pages-read"
               id="book-pages"
               class="form-input"
+              value="5000"
             />
             <div class="btn-container">
               <input
@@ -204,69 +207,43 @@
             <div id="cover-color">
               <p>Select a color for your cover</p>
               <label class="form-label radio-container"
-                >banana mania
+                ><span>white</span>
                 <input
                   type="radio"
                   name="cover-color"
                   class="color-radio"
-                  value="#F6E3B6"
-                  required
+                  value="#FFF"
+                  checked
                 />
-                <span class="checkmark sample-color" id="banana-mania"></span>
+                <span class="checkmark sample-color" id="white"></span>
               </label>
               <label class="form-label radio-container"
-                >misty rose
+                ><span>dark slate gray</span>
                 <input
                   type="radio"
                   name="cover-color"
                   class="color-radio"
-                  value="#FFE1D6"
+                  value="#2C514C"
                 />
-                <span class="checkmark sample-color" id="misty-rose"></span>
-              </label>
-              <label class="form-label radio-container"
-                >nyanza
-                <input
-                  type="radio"
-                  name="cover-color"
-                  class="color-radio"
-                  value="#D0E1CB"
-                />
-                <span class="checkmark sample-color" id="nyanza"></span>
-              </label>
-              <label class="form-label radio-container"
-                >lavender blue
-                <input
-                  type="radio"
-                  name="cover-color"
-                  class="color-radio"
-                  value="#D8D7FF"
-                />
-                <span class="checkmark sample-color" id="lavender-blue"></span>
-              </label>
-              <label class="form-label radio-container"
-                >light cyan
-                <input
-                  type="radio"
-                  name="cover-color"
-                  class="color-radio"
-                  value="#D7EAE7"
-                />
-                <span class="checkmark sample-color" id="light-cyan"></span>
+                <span
+                  class="checkmark sample-color"
+                  id="dark-slate-gray"
+                ></span>
               </label>
             </div>
             <div id="accent-color">
               <p>Select an accent-color</p>
               <label class="form-label radio-container"
-                >goldenrod
+                >corn
                 <input
                   type="radio"
                   name="accent-color"
                   class="color-radio"
-                  value="#e6af2e"
+                  value="#FFF275"
+                  checked
                   required
                 />
-                <span class="checkmark sample-color" id="goldenrod"></span>
+                <span class="checkmark sample-color" id="corn"></span>
               </label>
               <label class="form-label radio-container"
                 >imperial red
@@ -279,34 +256,37 @@
                 <span class="checkmark sample-color" id="imperial-red"></span>
               </label>
               <label class="form-label radio-container"
-                >han purple
+                >english red
                 <input
                   type="radio"
                   name="accent-color"
                   class="color-radio"
-                  value="#3D36FC"
+                  value="#A23E48"
                 />
-                <span class="checkmark sample-color" id="han-purple"></span>
+                <span class="checkmark sample-color" id="english-red"></span>
               </label>
               <label class="form-label radio-container"
-                >rich black fogra 29
+                >mango tango
                 <input
                   type="radio"
                   name="accent-color"
                   class="color-radio"
-                  value="#0D1321"
+                  value="#FF8C42"
                 />
-                <span class="checkmark sample-color" id="rich-black"></span>
+                <span class="checkmark sample-color" id="mango-tango"></span>
               </label>
               <label class="form-label radio-container"
-                >ocean blue
+                >dark slate gray
                 <input
                   type="radio"
                   name="accent-color"
                   class="color-radio"
-                  value="#633CCD"
+                  value="#2C514C"
                 />
-                <span class="checkmark sample-color" id="ocean-blue"></span>
+                <span
+                  class="checkmark sample-color"
+                  id="dark-slate-gray"
+                ></span>
               </label>
             </div>
             <div class="btn-container">
