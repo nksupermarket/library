@@ -75,17 +75,23 @@ function displayBook(a) {
   const firstPage = document.createElement("div");
   firstPage.classList.add("first-page");
 
-  const bookDisplayTitle = document.createElement("p");
-  bookDisplayTitle.classList.add("book-display-title");
-  bookDisplayTitle.textContent = a.title;
-  bookDisplayTitle.style.borderLeft = `5px solid ${a.accent}`;
+  function displayFirstPage() {
+    const bookDisplayTitle = document.createElement("p");
+    bookDisplayTitle.classList.add("book-display-title");
+    bookDisplayTitle.innerHTML = `<span>${a.title}</span>`;
+    bookDisplayTitle.style.borderLeft = `5px solid ${a.accent}`;
 
-  const bookDisplayAuthor = document.createElement("p");
-  bookDisplayAuthor.classList.add("book-display-author");
-  bookDisplayAuthor.textContent = a.author;
+    const bookDisplayAuthor = document.createElement("p");
+    bookDisplayAuthor.classList.add("book-display-author");
+    bookDisplayAuthor.innerHTML = `<span>${a.author}</span>`;
 
-  firstPage.appendChild(bookDisplayTitle);
-  firstPage.appendChild(bookDisplayAuthor);
+    return [bookDisplayTitle, bookDisplayAuthor];
+  }
+
+  const firstPageContents = displayFirstPage();
+
+  firstPage.appendChild(firstPageContents[0]);
+  firstPage.appendChild(firstPageContents[1]);
 
   const secondPage = document.createElement("div");
   secondPage.classList.add("second-page");
@@ -95,41 +101,130 @@ function displayBook(a) {
     secondPage.style.borderLeft = "1px solid white";
   }
 
-  const bookDisplayPages = document.createElement("div");
-  bookDisplayPages.classList.add("book-display-pages");
-  bookDisplayPages.textContent = `Pages read: `;
-  const bookDisplayPagesNum = document.createElement("p");
-  bookDisplayPagesNum.classList.add("book-display-pages-num");
-  bookDisplayPagesNum.textContent = a.pages;
-  bookDisplayPages.appendChild(bookDisplayPagesNum);
+  function displayPages() {
+    const bookDisplayPages = document.createElement("div");
+    bookDisplayPages.classList.add("book-display-pages");
+    bookDisplayPages.textContent = `Pages read: `;
+    const bookDisplayPagesNum = document.createElement("p");
+    bookDisplayPagesNum.classList.add("book-display-pages-num");
+    bookDisplayPagesNum.innerHTML = `<span>${a.pages}</span>`;
+    bookDisplayPages.appendChild(bookDisplayPagesNum);
 
-  const coverRadio = newBookForm.querySelector("#cover-color");
-  const bookDisplayCover = coverRadio.cloneNode(true);
-  const bookDisplayCoverText = bookDisplayCover.children[0];
-  const bookDisplayCoverLabel = bookDisplayCover.querySelectorAll("label");
-  for (i = 0; i < bookDisplayCoverLabel.length; i++) {
-    const bookDisplayCoverName = bookDisplayCoverLabel[i].querySelector("span");
-    bookDisplayCoverName.style.display = "none";
+    return bookDisplayPages;
   }
-  const bookDisplayCoverInput = bookDisplayCover.querySelectorAll("input");
-  for (i = 0; i < bookDisplayCoverInput.length; i++) {
-    if (a.cover === bookDisplayCoverInput[i].value)
-      bookDisplayCoverInput[i].checked = true;
-    bookDisplayCoverInput[i].name = `cover-color[${a.id}]`;
+  const bookDisplayPages = displayPages();
+
+  function displayCoverColor() {
+    const coverRadio = newBookForm.querySelector("#cover-color");
+    const bookDisplayCover = coverRadio.cloneNode(true);
+    const bookDisplayCoverText = bookDisplayCover.children[0];
+    const bookDisplayCoverLabel = bookDisplayCover.querySelectorAll("label");
+    for (i = 0; i < bookDisplayCoverLabel.length; i++) {
+      const bookDisplayCoverName = bookDisplayCoverLabel[i].querySelector(
+        "span"
+      );
+      bookDisplayCoverName.style.display = "none";
+    }
+
+    const bookDisplayCoverInput = bookDisplayCover.querySelectorAll("input");
+    for (i = 0; i < bookDisplayCoverInput.length; i++) {
+      if (a.cover === bookDisplayCoverInput[i].value)
+        bookDisplayCoverInput[i].checked = true;
+      bookDisplayCoverInput[i].name = `cover-color[${a.id}]`;
+    }
+
+    bookDisplayCoverText.textContent = "Your cover:";
+    bookDisplayCover.classList.add("book-display-cover");
+
+    return bookDisplayCover;
   }
-  bookDisplayCoverText.textContent = "Your cover:";
-  bookDisplayCover.classList.add("book-display-cover");
+  const bookDisplayCover = displayCoverColor();
+
+  function displayAccentColor() {
+    const accentRadio = newBookForm.querySelector("#accent-color");
+    const bookDisplayAccent = accentRadio.cloneNode(true);
+    const bookDisplayAccentText = bookDisplayAccent.children[0];
+    const bookDisplayAccentLabel = bookDisplayAccent.querySelectorAll("label");
+    for (i = 0; i < bookDisplayAccentLabel.length; i++) {
+      const bookDisplayAccentName = bookDisplayAccentLabel[i].querySelector(
+        "span"
+      );
+      bookDisplayAccentName.style.display = "none";
+    }
+
+    const bookDisplayAccentInput = bookDisplayAccent.querySelectorAll("input");
+    for (i = 0; i < bookDisplayAccentInput.length; i++) {
+      if (a.Accent === bookDisplayAccentInput[i].value)
+        bookDisplayAccentInput[i].checked = true;
+      bookDisplayAccentInput[i].name = `accent-color[${a.id}]`;
+    }
+
+    bookDisplayAccentText.textContent = "Your accent:";
+    bookDisplayAccent.classList.add("book-display-accent");
+
+    return bookDisplayAccent;
+  }
+
+  const bookDisplayAccent = displayAccentColor();
 
   secondPage.appendChild(bookDisplayPages);
   secondPage.appendChild(bookDisplayCover);
+  secondPage.appendChild(bookDisplayAccent);
 
-  bookDisplay.addEventListener("click", () => {
-    bookDisplay.classList.add("book-display-update");
-    bookDisplayTitle.setAttribute("contenteditable", "true");
-    bookDisplayAuthor.setAttribute("contenteditable", "true");
-    bookDisplayPagesNum.setAttribute("contenteditable", "true");
-    secondPage.style.opacity = "1";
+  changeColor();
+  function changeColor() {
+    const coverDisplayRadio = secondPage.querySelectorAll(
+      `input[name="cover-color[${a.id}]"]`
+    );
+    coverDisplayRadio.forEach((radio) =>
+      radio.addEventListener("change", (e) => {
+        bookDisplay.style.backgroundColor = e.target.value;
+        if (e.target.value === "#2C514C") {
+          secondPage.style.borderLeft = "1px solid white";
+          bookDisplay.style.color = "white";
+        } else {
+          secondPage.style.borderLeft = "1px solid var(--main-font)";
+          bookDisplay.style.color = "#2C514C";
+        }
+      })
+    );
+    const accentDisplayRadio = secondPage.querySelectorAll(
+      `input[name="accent-color[${a.id}]"]`
+    );
+    accentDisplayRadio.forEach((radio) =>
+      radio.addEventListener("change", (e) => {
+        const bookDisplayTitle = firstPage.querySelector(".book-display-title");
+        bookDisplayTitle.style.borderLeft = `5px solid ${e.target.value}`;
+      })
+    );
+  }
+
+  firstPage.addEventListener("click", () => {
+    if (!bookDisplay.classList.contains("book-display-update")) {
+      bookDisplay.classList.add("book-display-update");
+      firstPageContents[0].setAttribute("contenteditable", "true");
+      firstPageContents[1].setAttribute("contenteditable", "true");
+      bookDisplayPages.firstElementChild.setAttribute(
+        "contenteditable",
+        "true"
+      );
+      secondPage.style.opacity = "1";
+    }
   });
+
+  const exitBtn = document.createElement("div");
+  exitBtn.classList.add("exit", "drawn-border");
+  exitBtn.textContent = "X";
+  secondPage.appendChild(exitBtn);
+  exitBtn.addEventListener("click", closeBookDisplay);
+
+  function closeBookDisplay() {
+    bookDisplay.classList.remove("book-display-update");
+    secondPage.style.opacity = "0";
+    firstPageContents[0].setAttribute("contenteditable", "false");
+    firstPageContents[1].setAttribute("contenteditable", "false");
+    bookDisplayPages.firstElementChild.setAttribute("contenteditable", "false");
+  }
 
   bookDisplay.appendChild(firstPage);
   bookDisplay.appendChild(secondPage);
@@ -160,6 +255,8 @@ window.onclick = function (e) {
     resetModalAndForm();
   }
 };
+const exitModal = newBookForm.querySelectorAll(".exit");
+exitModal.forEach((btn) => btn.addEventListener("click", resetModalAndForm));
 function resetModalAndForm() {
   modal.style.display = "none";
   resetModal();

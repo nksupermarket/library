@@ -142,7 +142,7 @@ body {
   height: 40px;
   margin: 0 auto;
   border: 2px solid var(--main-font);
-  transition: 0.2s ease-out;
+  transition: 0.1s ease-out;
 }
 #search:hover {
   box-shadow: 4px 4px var(--main-font);
@@ -234,6 +234,7 @@ body {
   position: relative;
   transition: 0.2s ease-out;
   cursor: pointer;
+  overflow: hidden;
 }
 .book-display::after {
   content: "";
@@ -246,13 +247,10 @@ body {
   border-top-right-radius: 15px 225px;
   border-bottom-right-radius: 225px 15px;
   border-bottom-left-radius: 15px 255px;
-  opacity: 0;
+  opacity: 1;
   box-shadow: 8px 8px #3e726b;
-  transition: 0.2s ease-out;
+  transition: 0.1s ease-out;
   pointer-events: none;
-}
-.book-display:hover {
-  transform: translateY(-0.35em) scale(1.02);
 }
 .book-display:hover::after {
   opacity: 1;
@@ -261,55 +259,73 @@ body {
   width: 15rem;
 }
 .second-page {
+  position: relative;
   width: 15rem;
   height: 187px;
   box-sizing: border-box;
   border-bottom-left-radius: 15px 255px;
   opacity: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
+
 .book-display-title {
   font-size: 2rem;
   padding: 0.5rem 1rem;
   line-height: 2.3rem;
   width: 10rem;
   margin-left: 1rem;
+  word-break: break-all;
 }
 .book-display-author {
   font-size: 1.6rem;
   margin-left: 2.4rem;
   margin-bottom: 2.5rem;
+  width: 10rem;
+  word-break: break-all;
+}
+.second-page p {
+  margin-top: 0;
+  margin-bottom: 0.8rem;
 }
 .book-display-pages {
   margin-top: 2.5rem;
-  margin-bottom: 0;
+  margin-bottom: 5px;
 }
+.book-display-accent,
 .book-display-cover,
 .book-display-pages {
   font-size: 1.4rem;
   margin-left: 1.4rem;
+}
+.book-display-accent {
+  margin-bottom: 3rem;
+  margin-top: -0.5rem;
 }
 .book-display-pages-num {
   font-size: 1.6rem;
   margin-top: 0;
   display: inline-block;
 }
-.book-display-cover p {
-  margin-top: 0;
-  margin-bottom: 0.8rem;
+.book-display p[contenteditable="true"] span {
+  color: var(--main-font);
+  background-color: yellow;
 }
 .book-display .radio-container {
-  margin-left: 1.4rem;
+  margin-left: 0.5rem;
   display: inline-block;
-}
-.book-display #white {
-  border: none;
 }
 .book-display .radio-container:first-of-type {
   margin-left: 0.3rem;
 }
+.book-display #white {
+  border: 1px solid #666666;
+}
 .book-display .sample-color {
-  height: 2.5rem;
-  width: 2.5rem;
+  border: 1px solid #666666;
+  height: 1.5rem;
+  width: 1.5rem;
   top: 0;
   left: 0;
   margin-bottom: 0;
@@ -328,6 +344,29 @@ body {
   top: 0;
   background-color: rgba(0, 0, 0, 0.4);
 }
+.exit {
+  position: absolute;
+  font-family: "shadows into light", sans-serif;
+  top: 0.8rem;
+  right: 1.5rem;
+  height: 1.5rem;
+  width: 1.5rem;
+  font-size: 2rem;
+  text-align: center;
+  line-height: 1.5rem;
+  border: 2px solid var(--main-font);
+  cursor: pointer;
+  transition: 0.1s ease-out;
+}
+.second-page .exit {
+  top: -1rem;
+}
+.second-page .exit:hover {
+  transform: translateY(1rem);
+}
+.exit:hover {
+  transform: scale(1.2);
+}
 .modal-sequence {
   flex-direction: column;
   justify-content: center;
@@ -336,6 +375,7 @@ body {
   grid-template-rows: 1fr 1fr 1fr;
   border: 3px solid var(--main-font);
   box-shadow: 10px 10px var(--main-font);
+  position: relative;
 }
 .form-container input[type="text"],
 input[type="number"] {
@@ -360,11 +400,11 @@ input[type="number"]:focus {
   color: var(--main-font);
 }
 #first-modal {
-  height: 290px;
+  height: 300px;
   width: 300px;
 }
 #second-modal {
-  height: 370px;
+  height: 390px;
   width: 270px;
 }
 #third-modal {

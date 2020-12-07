@@ -95,6 +95,7 @@
     <div class="modal">
       <form class="new-book" name="new-book">
         <div id="first-modal" class="modal-sequence active-modal drawn-border">
+          <div class="exit drawn-border">X</div>
           <h3 class="book-form-title">add new book</h3>
           <div class="form-container">
             <div id="book-title">
@@ -125,6 +126,7 @@
           </div>
         </div>
         <div id="second-modal" class="modal-sequence drawn-border">
+          <div class="exit drawn-border">X</div>
           <h3 class="book-form-title">Where ya at?</h3>
           <div class="form-container">
             <div class="read-radio-btns">
@@ -204,6 +206,7 @@
         <div id="third-modal" class="modal-sequence drawn-border">
           <div class="form-container">
             <h3 class="book-form-title">Design your book!</h3>
+            <div class="exit drawn-border">X</div>
             <div id="cover-color">
               <p>Select a color for your cover</p>
               <label class="form-label radio-container"
@@ -214,6 +217,7 @@
                   class="color-radio"
                   value="#FFF"
                   checked
+                  required
                 />
                 <span class="checkmark sample-color" id="white"></span>
               </label>
@@ -234,7 +238,7 @@
             <div id="accent-color">
               <p>Select an accent-color</p>
               <label class="form-label radio-container"
-                >corn
+                ><span>corn</span>
                 <input
                   type="radio"
                   name="accent-color"
@@ -246,7 +250,7 @@
                 <span class="checkmark sample-color" id="corn"></span>
               </label>
               <label class="form-label radio-container"
-                >imperial red
+                ><span>imperial red</span>
                 <input
                   type="radio"
                   name="accent-color"
@@ -256,7 +260,7 @@
                 <span class="checkmark sample-color" id="imperial-red"></span>
               </label>
               <label class="form-label radio-container"
-                >english red
+                ><span>english red</span>
                 <input
                   type="radio"
                   name="accent-color"
@@ -266,7 +270,7 @@
                 <span class="checkmark sample-color" id="english-red"></span>
               </label>
               <label class="form-label radio-container"
-                >mango tango
+                ><span>mango tango</span>
                 <input
                   type="radio"
                   name="accent-color"
@@ -276,7 +280,7 @@
                 <span class="checkmark sample-color" id="mango-tango"></span>
               </label>
               <label class="form-label radio-container"
-                >dark slate gray
+                ><span>dark slate gray</span>
                 <input
                   type="radio"
                   name="accent-color"
