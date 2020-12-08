@@ -43,7 +43,7 @@ function addBookToLibrary() {
   if (myLibrary.length === 0) {
     id = 0;
   } else {
-    id = myLibrary[myLibrary.length - 1].id + 1;
+    id = +myLibrary[myLibrary.length - 1].id + 1;
   }
 
   const newBook = new Book(
@@ -59,18 +59,34 @@ function addBookToLibrary() {
   myLibrary.push(newBook);
   return newBook;
 }
+const lotr = new Book(
+  "lord of the rings",
+  "jr tolkein",
+  "5000",
+  "currently reading",
+  "#FFF",
+  "#e54b4b",
+  "0"
+);
+
+myLibrary.push(lotr);
+
 for (i = 0; i < myLibrary.length; i++) {
   displayBook(myLibrary[i]);
 }
 function displayBook(a) {
   const section = document.querySelector(`.section[data-name = "${a.status}"]`);
   const bookContainer = section.querySelector(".book-ctn");
+  const bookWrapper = document.createElement("div");
   const bookDisplay = document.createElement("div");
 
+  bookWrapper.classList.add("book-wrapper");
+  bookWrapper.dataset.id = a.id;
+
   bookDisplay.classList.add("book-display", "drawn-border");
-  bookDisplay.dataset.id = a.id;
   bookDisplay.style.backgroundColor = `${a.cover}`;
   if (a.cover === "#2C514C") bookDisplay.style.color = "white";
+  bookWrapper.appendChild(bookDisplay);
 
   const firstPage = document.createElement("div");
   firstPage.classList.add("first-page");
@@ -92,6 +108,44 @@ function displayBook(a) {
 
   firstPage.appendChild(firstPageContents[0]);
   firstPage.appendChild(firstPageContents[1]);
+
+  const whereIsBook = (book) => {
+    for (i = 0; i < myLibrary.length; i++)
+      if (book == myLibrary[i].id) return i;
+  };
+  function createRemoveBtn() {
+    const removeBookBtn = document.createElement("div");
+    removeBookBtn.classList.add("remove-book-btn", "drawn-border", "inactive");
+    removeBookBtn.textContent = "remove book";
+    removeBookBtn.dataset.id = a.id;
+    const currentBook = removeBookBtn.dataset.id;
+
+    removeBookBtn.addEventListener("click", () => {
+      removeBook(currentBook);
+    });
+
+    function removeBook(book) {
+      const removeBookPopUp = document.querySelector(".pop-up");
+      removeBookPopUp.classList.remove("inactive");
+
+      const yesBtn = removeBookPopUp.querySelector(".yes-btn");
+      const noBtn = removeBookPopUp.querySelector(".no-btn");
+
+      yesBtn.addEventListener("click", () => {
+        myLibrary.splice(whereIsBook(book), 1);
+        if (book === bookWrapper.dataset.id) bookWrapper.remove();
+        removeBookPopUp.classList.add("inactive");
+      });
+
+      noBtn.addEventListener("click", () => {
+        removeBookPopUp.classList.add("inactive");
+      });
+    }
+
+    return removeBookBtn;
+  }
+  const removeBookBtn = createRemoveBtn();
+  bookWrapper.appendChild(removeBookBtn);
 
   const secondPage = document.createElement("div");
   secondPage.classList.add("second-page");
@@ -171,8 +225,7 @@ function displayBook(a) {
   secondPage.appendChild(bookDisplayCover);
   secondPage.appendChild(bookDisplayAccent);
 
-  changeColor();
-  function changeColor() {
+  (function changeColor() {
     const coverDisplayRadio = secondPage.querySelectorAll(
       `input[name="cover-color[${a.id}]"]`
     );
@@ -188,6 +241,7 @@ function displayBook(a) {
         }
       })
     );
+
     const accentDisplayRadio = secondPage.querySelectorAll(
       `input[name="accent-color[${a.id}]"]`
     );
@@ -197,25 +251,62 @@ function displayBook(a) {
         bookDisplayTitle.style.borderLeft = `5px solid ${e.target.value}`;
       })
     );
+  })();
+
+  (function editBookColor() {
+    const radioBtns = secondPage.querySelectorAll("input[type=radio]");
+    radioBtns.forEach((btn) =>
+      btn.addEventListener("change", (e) => {
+        e.target.name.includes("accent")
+          ? (myLibrary[whereIsBook(a.id)].accent = e.target.value)
+          : (myLibrary[whereIsBook(a.id)].cover = e.target.value);
+      })
+    );
+  })();
+
+  (function openSecondPage() {
+    firstPage.addEventListener("click", () => {
+      if (!bookDisplay.classList.contains("book-display-update")) {
+        bookDisplay.classList.add("book-display-update");
+        firstPageContents[0].setAttribute("contenteditable", "true");
+        firstPageContents[1].setAttribute("contenteditable", "true");
+        bookDisplayPages.firstElementChild.setAttribute(
+          "contenteditable",
+          "true"
+        );
+        secondPage.style.opacity = "1";
+        exitBtn.classList.remove("inactive");
+        removeBookBtn.classList.remove("inactive");
+
+        editBookText();
+      }
+    });
+  })();
+
+  function editBookText() {
+    const contentEditable = bookDisplay.querySelectorAll(
+      "[contenteditable=true]"
+    );
+    contentEditable.forEach((p) =>
+      p.addEventListener("input", () => {
+        switch (p.classList.value) {
+          case "book-display-title":
+            myLibrary[whereIsBook(a.id)].title = p.textContent;
+            break;
+          case "book-display-author":
+            myLibrary[whereIsBook(a.id)].author = p.textContent;
+            break;
+          case "book-display-pages-num":
+            myLibrary[whereIsBook(a.id)].pages = p.textContent;
+        }
+      })
+    );
   }
 
-  firstPage.addEventListener("click", () => {
-    if (!bookDisplay.classList.contains("book-display-update")) {
-      bookDisplay.classList.add("book-display-update");
-      firstPageContents[0].setAttribute("contenteditable", "true");
-      firstPageContents[1].setAttribute("contenteditable", "true");
-      bookDisplayPages.firstElementChild.setAttribute(
-        "contenteditable",
-        "true"
-      );
-      secondPage.style.opacity = "1";
-    }
-  });
-
   const exitBtn = document.createElement("div");
-  exitBtn.classList.add("exit", "drawn-border");
+  exitBtn.classList.add("exit", "drawn-border", "inactive");
   exitBtn.textContent = "X";
-  secondPage.appendChild(exitBtn);
+  bookWrapper.appendChild(exitBtn);
   exitBtn.addEventListener("click", closeBookDisplay);
 
   function closeBookDisplay() {
@@ -224,12 +315,14 @@ function displayBook(a) {
     firstPageContents[0].setAttribute("contenteditable", "false");
     firstPageContents[1].setAttribute("contenteditable", "false");
     bookDisplayPages.firstElementChild.setAttribute("contenteditable", "false");
+    exitBtn.classList.add("inactive");
+    removeBookBtn.classList.add("inactive");
   }
 
   bookDisplay.appendChild(firstPage);
   bookDisplay.appendChild(secondPage);
 
-  bookContainer.appendChild(bookDisplay);
+  bookContainer.appendChild(bookWrapper);
 }
 
 const addNewBtn = document.querySelectorAll(".add-new-btn");

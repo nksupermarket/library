@@ -14,6 +14,7 @@ body {
   overflow-x: hidden;
   margin: 0;
   padding: 0;
+  min-height: 100vh;
   background-color: #fff;
   background-image: linear-gradient(
       90deg,
@@ -166,9 +167,6 @@ body {
   width: 75%;
   overflow: hidden;
 }
-.section {
-  margin-bottom: 30px;
-}
 .section-header {
   display: flex;
   align-items: center;
@@ -194,7 +192,7 @@ body {
   border: 2px solid var(--add-new-btn);
   display: flex;
   align-items: center;
-  transition: max-width 0.4s ease-in;
+  transition: max-width 0.2s ease-out;
   box-shadow: 2px 2px var(--add-new-btn);
   box-sizing: border-box;
   overflow: hidden;
@@ -214,13 +212,25 @@ body {
   max-width: 115px;
   animation: btn-shake 0.2s infinite;
 }
+.yes-btn:active,
+.no-btn:active,
+.remove-book-btn:active,
 .next-modal:active,
 .back-modal:active,
 .add-new-btn:active {
   box-shadow: none;
 }
+
 .book-ctn {
   display: flex;
+  margin: 3rem 0;
+}
+.book-wrapper {
+  position: relative;
+}
+.inactive {
+  opacity: 0;
+  pointer-events: none;
 }
 .book-display {
   display: grid;
@@ -231,10 +241,10 @@ body {
   width: 300px;
   color: var(--main-font);
   border: 2px solid var(--main-font);
+  overflow: hidden;
   position: relative;
   transition: 0.2s ease-out;
   cursor: pointer;
-  overflow: hidden;
 }
 .book-display::after {
   content: "";
@@ -247,7 +257,7 @@ body {
   border-top-right-radius: 15px 225px;
   border-bottom-right-radius: 225px 15px;
   border-bottom-left-radius: 15px 255px;
-  opacity: 1;
+  opacity: 0;
   box-shadow: 8px 8px #3e726b;
   transition: 0.1s ease-out;
   pointer-events: none;
@@ -257,6 +267,7 @@ body {
 }
 .first-page {
   width: 15rem;
+  overflow-y: auto;
 }
 .second-page {
   position: relative;
@@ -269,7 +280,6 @@ body {
   flex-direction: column;
   justify-content: space-between;
 }
-
 .book-display-title {
   font-size: 2rem;
   padding: 0.5rem 1rem;
@@ -284,6 +294,55 @@ body {
   margin-bottom: 2.5rem;
   width: 10rem;
   word-break: break-all;
+}
+.book-wrapper .remove-book-btn {
+  font-size: 1.4rem;
+  line-height: 2.3rem;
+  position: absolute;
+  width: 10rem;
+  text-align: center;
+  bottom: -2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.remove-book-btn:hover {
+  animation: btn-shake-remove 0.2s infinite;
+}
+@keyframes btn-shake-remove {
+  0% {
+    transform: translateX(-50%) rotate(0deg);
+  }
+  25% {
+    transform: translateX(-50%) rotate(1.5deg);
+  }
+  50% {
+    transform: translateX(-50%) rotate(0deg);
+  }
+  75% {
+    transform: translateX(-50%) rotate(-1.5deg);
+  }
+  100% {
+    transform: translateX(-50%) rotate(0deg);
+  }
+}
+div.pop-up {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  text-align: center;
+  font-size: 1.6rem;
+  height: 15rem;
+  width: 34rem;
+}
+.pop-up p {
+  margin-top: 3rem;
+  margin-bottom: 0.5rem;
+}
+.yes-btn {
+  margin-left: 1.5rem;
 }
 .second-page p {
   margin-top: 0;
@@ -358,15 +417,15 @@ body {
   cursor: pointer;
   transition: 0.1s ease-out;
 }
-.second-page .exit {
-  top: -1rem;
-}
-.second-page .exit:hover {
-  transform: translateY(1rem);
+.book-wrapper .exit {
+  color: var(--main-font);
+  top: 0.3rem;
+  right: 0.3rem;
 }
 .exit:hover {
   transform: scale(1.2);
 }
+.pop-up,
 .modal-sequence {
   flex-direction: column;
   justify-content: center;
@@ -418,28 +477,35 @@ input[type="number"]:focus {
 .form-container div {
   margin-bottom: 10px;
 }
+.no-btn,
+.yes-btn,
+.remove-book-btn,
 .back-modal,
 .next-modal {
   display: inline-block;
-  border: none;
   height: 2.5rem;
   width: 6rem;
   font-weight: 500;
   cursor: pointer;
   margin-top: 15px;
-  transition: 0.2s ease-in;
+  transition: 0.1s ease-in;
 }
+.no-btn,
+.remove-book-btn,
 .next-modal {
   color: var(--add-new-btn);
   border: 2px solid var(--add-new-btn);
   box-shadow: 2px 2px var(--add-new-btn);
 }
+.yes-btn,
 .back-modal {
   color: #87b37a;
   border: 2px solid #87b37a;
   box-shadow: 2px 2px #87b37a;
   margin-right: 10px;
 }
+.yes-btn:hover,
+.no-btn:hover,
 .next-modal:hover,
 .back-modal:hover {
   animation: btn-shake 0.2s infinite;
