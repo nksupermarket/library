@@ -59,21 +59,36 @@ function addBookToLibrary() {
   myLibrary.push(newBook);
   return newBook;
 }
-const lotr = new Book(
-  "lord of the rings",
-  "jr tolkein",
-  "5000",
-  "currently reading",
-  "#FFF",
-  "#e54b4b",
-  "0"
-);
-
-myLibrary.push(lotr);
 
 for (i = 0; i < myLibrary.length; i++) {
   displayBook(myLibrary[i]);
 }
+
+const bookStatusArr = [
+  "currently reading",
+  "haven't started",
+  "wishlist",
+  "finished",
+];
+const coverRadios = newBookForm.querySelectorAll("input[name=cover-color]");
+const accentRadios = newBookForm.querySelectorAll("input[name=accent-color]");
+let j = 0;
+for (let i = 0; i < 5; i++) {
+  for (let n = 0; n < bookStatusArr.length; n++) {
+    const sampleBook = new Book(
+      `sample book ${i}`,
+      `sample author ${i}`,
+      `${Math.floor(Math.random() * 5000)}`,
+      bookStatusArr[n],
+      `${coverRadios[Math.floor(Math.random() * 2)].value}`,
+      `${accentRadios[Math.floor(Math.random() * 5)].value}`,
+      `${j++}`
+    );
+    myLibrary.push(sampleBook);
+    displayBook(sampleBook);
+  }
+}
+
 function displayBook(a) {
   const section = document.querySelector(`.section[data-name = "${a.status}"]`);
   const bookContainer = section.querySelector(".book-ctn");
@@ -81,7 +96,10 @@ function displayBook(a) {
   const bookDisplay = document.createElement("div");
 
   bookWrapper.classList.add("book-wrapper");
-  bookWrapper.dataset.id = a.id;
+  bookWrapper.setAttribute("draggable", "true");
+  bookWrapper.dataset.status = a.status;
+  bookWrapper.id = a.id;
+  bookWrapper.addEventListener("dragstart", onDragStart);
 
   bookDisplay.classList.add("book-display", "drawn-border");
   bookDisplay.style.backgroundColor = `${a.cover}`;
@@ -109,10 +127,6 @@ function displayBook(a) {
   firstPage.appendChild(firstPageContents[0]);
   firstPage.appendChild(firstPageContents[1]);
 
-  const whereIsBook = (book) => {
-    for (i = 0; i < myLibrary.length; i++)
-      if (book == myLibrary[i].id) return i;
-  };
   function createRemoveBtn() {
     const removeBookBtn = document.createElement("div");
     removeBookBtn.classList.add("remove-book-btn", "drawn-border", "inactive");
@@ -133,7 +147,7 @@ function displayBook(a) {
 
       yesBtn.addEventListener("click", () => {
         myLibrary.splice(whereIsBook(book), 1);
-        if (book === bookWrapper.dataset.id) bookWrapper.remove();
+        if (book === bookWrapper.id) bookWrapper.remove();
         removeBookPopUp.classList.add("inactive");
       });
 
@@ -267,6 +281,7 @@ function displayBook(a) {
   (function openSecondPage() {
     firstPage.addEventListener("click", () => {
       if (!bookDisplay.classList.contains("book-display-update")) {
+        bookWrapper.style.transform = "translateY(-1rem)";
         bookDisplay.classList.add("book-display-update");
         firstPageContents[0].setAttribute("contenteditable", "true");
         firstPageContents[1].setAttribute("contenteditable", "true");
@@ -310,6 +325,7 @@ function displayBook(a) {
   exitBtn.addEventListener("click", closeBookDisplay);
 
   function closeBookDisplay() {
+    bookWrapper.style.transform = "translateY(0)";
     bookDisplay.classList.remove("book-display-update");
     secondPage.style.opacity = "0";
     firstPageContents[0].setAttribute("contenteditable", "false");
@@ -322,9 +338,62 @@ function displayBook(a) {
   bookDisplay.appendChild(firstPage);
   bookDisplay.appendChild(secondPage);
 
-  bookContainer.appendChild(bookWrapper);
+  bookContainer.prepend(bookWrapper);
 }
+const whereIsBook = (bookId) => {
+  for (i = 0; i < myLibrary.length; i++)
+    if (bookId == myLibrary[i].id) return i;
+};
 
+function onDragStart(event) {
+  let obj = { id: event.target.id, dataset: event.target.dataset.status };
+  event.dataTransfer.setData("text/plain", JSON.stringify(obj));
+}
+function onDragEnter(event) {
+  event.preventDefault();
+  const section = appendSection(event);
+  section.classList.add("drag-over");
+}
+function onDragLeave(event) {
+  const section = appendSection(event);
+  section.classList.remove("drag-over");
+}
+function onDragOver(event) {
+  event.preventDefault();
+  const section = appendSection(event);
+  section.classList.add("drag-over");
+}
+function onDrop(event) {
+  event.preventDefault();
+
+  const section = appendSection(event);
+  section.classList.remove("drag-over");
+
+  const objStr = event.dataTransfer.getData("text/plain");
+  const obj = JSON.parse(objStr);
+  const draggableElement = document.getElementById(obj.id);
+  let dropzone = event.target;
+
+  let i = 0;
+  while (!dropzone.getAttribute("ondrop") && i < 7) {
+    dropzone = dropzone.parentElement;
+    i++;
+  }
+  if (obj.dataset == dropzone.dataset.status) return false;
+
+  dropzone.prepend(draggableElement);
+  myLibrary[whereIsBook(obj.id)].status = dropzone.dataset.status;
+}
+function appendSection(event) {
+  let section = event.target;
+
+  let i = 0;
+  while (!section.getAttribute("data-name") && i < 10) {
+    section = section.parentElement;
+    i++;
+  }
+  return section;
+}
 const addNewBtn = document.querySelectorAll(".add-new-btn");
 const modal = document.querySelector(".modal");
 addNewBtn.forEach((btn) => {

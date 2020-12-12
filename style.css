@@ -19,26 +19,26 @@ body {
   background-image: linear-gradient(
       90deg,
       transparent 300px,
-      #abced4 300px,
-      #abced4 301px,
+      #ffaa9f 300px,
+      #ffaa9f 301px,
       transparent 301px
     ),
     linear-gradient(#eee 0.1em, transparent 0.1em);
   background-size: 100% 1.2em;
   display: grid;
   grid-template-areas:
-    "menu search"
-    "menu content";
-  grid-template-rows: 200px 1fr;
-  grid-template-columns: 300px 1fr;
+    "menu search end"
+    "menu content end";
+  grid-template-rows: 20rem 1fr;
+  grid-template-columns: 30rem 1fr 20rem;
 }
 .paper-top {
   background-color: white;
   background-image: linear-gradient(
     90deg,
     transparent 300px,
-    #abced4 300px,
-    #abced4 301px,
+    #ffaa9f 300px,
+    #ffaa9f 301px,
     transparent 301px
   );
   width: 100%;
@@ -50,9 +50,9 @@ body {
 .paper-end {
   width: 1px;
   height: 100vh;
-  position: absolute;
+  position: fixed;
   background-color: #abced4;
-  right: 200px;
+  right: 20rem;
   z-index: -2;
 }
 .main-font {
@@ -66,7 +66,7 @@ body {
 }
 #corner-right-img {
   height: 250px;
-  position: absolute;
+  position: fixed;
   transform: rotate(230deg);
   right: -10px;
   top: -10px;
@@ -105,7 +105,7 @@ body {
   padding: 0;
   margin: 0 auto;
   list-style: none;
-  margin-top: 10px;
+  margin-top: 2.2rem;
 }
 .menu ul li:first-child {
   margin-top: 0px;
@@ -161,11 +161,17 @@ body {
   box-shadow: none;
 }
 .content {
+  justify-self: center;
   grid-area: content;
-  margin-top: 10px;
-  margin-left: 100px;
-  width: 75%;
+  margin-top: 1rem;
+  width: 90%;
   overflow: hidden;
+}
+.section {
+  padding: 2rem;
+}
+.section:last-child {
+  padding-bottom: 4rem;
 }
 .section-header {
   display: flex;
@@ -177,9 +183,11 @@ body {
 .section-title {
   color: var(--main-font);
   font-size: 2.5rem;
-  margin-top: 8px;
+  margin-top: 0;
 }
-
+.drag-over {
+  border: 5px solid var(--add-new-btn);
+}
 .add-new-btn {
   height: 22px;
   max-width: 21px;
@@ -220,13 +228,18 @@ body {
 .add-new-btn:active {
   box-shadow: none;
 }
-
 .book-ctn {
   display: flex;
-  margin: 3rem 0;
+  align-items: center;
+  height: 29rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  margin-bottom: 1rem;
 }
 .book-wrapper {
   position: relative;
+  transition: 0.1s ease-out;
+  margin-bottom: 0.5rem;
 }
 .inactive {
   opacity: 0;
@@ -245,25 +258,6 @@ body {
   position: relative;
   transition: 0.2s ease-out;
   cursor: pointer;
-}
-.book-display::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  bottom: 0;
-  border-top-left-radius: 255px 15px;
-  border-top-right-radius: 15px 225px;
-  border-bottom-right-radius: 225px 15px;
-  border-bottom-left-radius: 15px 255px;
-  opacity: 0;
-  box-shadow: 8px 8px #3e726b;
-  transition: 0.1s ease-out;
-  pointer-events: none;
-}
-.book-display:hover::after {
-  opacity: 1;
 }
 .first-page {
   width: 15rem;
@@ -286,14 +280,12 @@ body {
   line-height: 2.3rem;
   width: 10rem;
   margin-left: 1rem;
-  word-break: break-all;
 }
 .book-display-author {
   font-size: 1.6rem;
   margin-left: 2.4rem;
   margin-bottom: 2.5rem;
   width: 10rem;
-  word-break: break-all;
 }
 .book-wrapper .remove-book-btn {
   font-size: 1.4rem;
@@ -326,7 +318,7 @@ body {
   }
 }
 div.pop-up {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
