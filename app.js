@@ -73,11 +73,11 @@ const bookStatusArr = [
 const coverRadios = newBookForm.querySelectorAll("input[name=cover-color]");
 const accentRadios = newBookForm.querySelectorAll("input[name=accent-color]");
 let j = 0;
-for (let i = 0; i < 5; i++) {
+for (let i = 0; i < 2; i++) {
   for (let n = 0; n < bookStatusArr.length; n++) {
     const sampleBook = new Book(
-      `sample book ${i}`,
-      `sample author ${i}`,
+      `sample book`,
+      `sample author`,
       `${Math.floor(Math.random() * 5000)}`,
       bookStatusArr[n],
       `${coverRadios[Math.floor(Math.random() * 2)].value}`,
@@ -100,6 +100,13 @@ function displayBook(a) {
   bookWrapper.dataset.status = a.status;
   bookWrapper.id = a.id;
   bookWrapper.addEventListener("dragstart", onDragStart);
+
+  const bulkUpdateCheck = document.createElement("input");
+  bulkUpdateCheck.type = "checkbox";
+  bulkUpdateCheck.value = a.id;
+  bulkUpdateCheck.name = "bulk-update";
+  bulkUpdateCheck.classList.add("bulk-update-check", "drawn-border");
+  bookWrapper.appendChild(bulkUpdateCheck);
 
   bookDisplay.classList.add("book-display", "drawn-border");
   bookDisplay.style.backgroundColor = `${a.cover}`;
@@ -222,7 +229,7 @@ function displayBook(a) {
 
     const bookDisplayAccentInput = bookDisplayAccent.querySelectorAll("input");
     for (i = 0; i < bookDisplayAccentInput.length; i++) {
-      if (a.Accent === bookDisplayAccentInput[i].value)
+      if (a.accent === bookDisplayAccentInput[i].value)
         bookDisplayAccentInput[i].checked = true;
       bookDisplayAccentInput[i].name = `accent-color[${a.id}]`;
     }
@@ -278,10 +285,11 @@ function displayBook(a) {
     );
   })();
 
-  (function openSecondPage() {
+  (function openBookDisplay() {
     firstPage.addEventListener("click", () => {
       if (!bookDisplay.classList.contains("book-display-update")) {
         bookWrapper.style.transform = "translateY(-1rem)";
+        bookWrapper.setAttribute("draggable", "false");
         bookDisplay.classList.add("book-display-update");
         firstPageContents[0].setAttribute("contenteditable", "true");
         firstPageContents[1].setAttribute("contenteditable", "true");
@@ -326,6 +334,7 @@ function displayBook(a) {
 
   function closeBookDisplay() {
     bookWrapper.style.transform = "translateY(0)";
+    bookWrapper.setAttribute("draggable", "true");
     bookDisplay.classList.remove("book-display-update");
     secondPage.style.opacity = "0";
     firstPageContents[0].setAttribute("contenteditable", "false");
@@ -386,7 +395,6 @@ function onDrop(event) {
 }
 function appendSection(event) {
   let section = event.target;
-
   let i = 0;
   while (!section.getAttribute("data-name") && i < 10) {
     section = section.parentElement;
@@ -412,30 +420,78 @@ addNewBtn.forEach((btn) => {
   });
 });
 
-window.onclick = function (e) {
-  if (e.target == modal) {
-    resetModalAndForm();
-  }
-};
-const exitModal = newBookForm.querySelectorAll(".exit");
-exitModal.forEach((btn) => btn.addEventListener("click", resetModalAndForm));
-function resetModalAndForm() {
-  modal.style.display = "none";
-  resetModal();
-  document.forms["new-book"].reset();
+const modalBulk = document.querySelector(".modal-bulk");
+const bulkEditForm = document.querySelector("form[name=bulk-update]");
+
+function showBulkForm() {
+  modalBulk.style.cssText = "display: grid; place-items: center;";
 }
+function bulkUpdate() {
+  let checkedBooks = [];
+  const bulkUpdateChecked = document.querySelectorAll(
+    "input[name=bulk-update]:checked"
+  );
+
+  for (i = 0; i < bulkUpdateChecked.length; i++) {
+    checkedBooks.push(bulkUpdateChecked[i].value);
+    bookWrapper = document.getElementById(bulkUpdateChecked[i].value);
+    bookWrapper.remove();
+  }
+
+  const bookTitle = bulkEditForm.querySelector("input[name = book-title]")
+    .value;
+  const bookAuthor = bulkEditForm.querySelector("input[name = author]").value;
+  const bookPages = bulkEditForm.querySelector("input[name = pages-read]")
+    .value;
+  let bookStatus;
+  const readRadio = bulkEditForm.querySelectorAll("input[name = read]");
+  for (i = 0; i < readRadio.length; i++) {
+    if (readRadio[i].checked) bookStatus = readRadio[i].value;
+  }
+  let bookCover;
+  const coverRadio = bulkEditForm.querySelectorAll("input[name = cover-color]");
+  for (i = 0; i < coverRadio.length; i++) {
+    if (coverRadio[i].checked) bookCover = coverRadio[i].value;
+  }
+  let bookAccent;
+  const accentRadio = bulkEditForm.querySelectorAll(
+    "input[name = accent-color]"
+  );
+
+  for (i = 0; i < accentRadio.length; i++) {
+    if (accentRadio[i].checked) bookAccent = accentRadio[i].value;
+  }
+
+  for (n = 0; n < checkedBooks.length; n++) {
+    const book = whereIsBook(checkedBooks[n]);
+    if (bookTitle) myLibrary[book].title = bookTitle;
+    if (bookAuthor) myLibrary[book].author = bookAuthor;
+    if (bookPages) myLibrary[book].pages = bookPages;
+    if (bookStatus) myLibrary[book].status = bookStatus;
+    if (bookCover) myLibrary[book].cover = bookCover;
+    if (bookAccent) myLibrary[book].accent = bookAccent;
+    displayBook(myLibrary[book]);
+  }
+  modalBulk.style.display = "none";
+  resetModalAndForm(modalBulk, "bulk-update");
+}
+
 const modalSequence = newBookForm.querySelectorAll(".modal-sequence");
 const nextModalBtns = newBookForm.querySelectorAll(".next-modal");
-let n = 0;
+let modalNumber = 0;
 nextModalBtns.forEach((btn) => {
   btn.addEventListener("click", () => {
-    const currentModal = newBookForm.querySelectorAll(".modal-sequence")[n];
+    const currentModal = newBookForm.querySelectorAll(".modal-sequence")[
+      modalNumber
+    ];
     if (validateForm() === true) {
       if (btn.value === "Submit") {
         resetModalAndForm();
         return;
       }
-      const nextModal = newBookForm.querySelectorAll(".modal-sequence")[++n];
+      const nextModal = newBookForm.querySelectorAll(".modal-sequence")[
+        ++modalNumber
+      ];
       currentModal.classList.remove("active-modal");
       nextModal.classList.add("active-modal");
     } else {
@@ -446,8 +502,12 @@ nextModalBtns.forEach((btn) => {
 const backModalBtns = newBookForm.querySelectorAll(".back-modal");
 backModalBtns.forEach((btn) => {
   btn.addEventListener("click", () => {
-    const currentModal = newBookForm.querySelectorAll(".modal-sequence")[n];
-    const prevModal = newBookForm.querySelectorAll(".modal-sequence")[--n];
+    const currentModal = newBookForm.querySelectorAll(".modal-sequence")[
+      modalNumber
+    ];
+    const prevModal = newBookForm.querySelectorAll(".modal-sequence")[
+      --modalNumber
+    ];
 
     currentModal.classList.remove("active-modal");
     prevModal.classList.add("active-modal");
@@ -475,7 +535,30 @@ function resetModal() {
   firstModal.classList.add("active-modal");
   const invalids = activeModal.querySelectorAll(".invalid");
   invalids.forEach((field) => field.classList.remove("invalid"));
-  n = 0;
+  modalNumber = 0;
+}
+
+window.onclick = function (e) {
+  if (e.target == modal) {
+    return resetModalAndForm(modal, "new-book");
+  } else if (e.target == modalBulk) {
+    return resetModalAndForm(modalBulk, "bulk-update");
+  }
+};
+const exitBulk = bulkEditForm.querySelector(".exit");
+exitBulk.addEventListener("click", function () {
+  resetModalAndForm(modalBulk, "bulk-update");
+});
+const exitModal = newBookForm.querySelectorAll(".exit");
+exitModal.forEach((btn) =>
+  btn.addEventListener("click", function () {
+    resetModalAndForm(modal, "new-book");
+  })
+);
+function resetModalAndForm(popUp, formName) {
+  popUp.style.display = "none";
+  if (popUp === modal) resetModal();
+  document.forms[formName].reset();
 }
 
 function validateForm() {

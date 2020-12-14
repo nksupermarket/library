@@ -32,6 +32,9 @@ body {
   grid-template-rows: 20rem 1fr;
   grid-template-columns: 30rem 1fr 20rem;
 }
+p {
+  font-size: 1.6rem;
+}
 .paper-top {
   background-color: white;
   background-image: linear-gradient(
@@ -80,7 +83,6 @@ body {
   display: grid;
   grid-template-rows: 200px auto 300px;
 }
-
 #logo {
   place-self: center;
   position: relative;
@@ -160,6 +162,29 @@ body {
 #search:hover input {
   box-shadow: none;
 }
+.end {
+  right: 0;
+  width: 20rem;
+  height: 100vh;
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.instructions {
+  font-size: 1.6rem;
+  margin: 0 1.6rem;
+  color: var(--main-font);
+  margin-bottom: 2rem;
+}
+.bulk-btn {
+  margin-top: 2rem;
+  font-size: 1.6rem;
+  font-weight: bold;
+  padding: 1rem 2rem;
+  cursor: pointer;
+}
 .content {
   justify-self: center;
   grid-area: content;
@@ -169,6 +194,7 @@ body {
 }
 .section {
   padding: 2rem;
+  box-sizing: border-box;
 }
 .section:last-child {
   padding-bottom: 4rem;
@@ -186,7 +212,7 @@ body {
   margin-top: 0;
 }
 .drag-over {
-  border: 5px solid var(--add-new-btn);
+  border: 3px dotted var(--add-new-btn);
 }
 .add-new-btn {
   height: 22px;
@@ -204,6 +230,7 @@ body {
   box-shadow: 2px 2px var(--add-new-btn);
   box-sizing: border-box;
   overflow: hidden;
+  margin-top: -2rem;
 }
 .plus-sym {
   font-weight: 900;
@@ -216,10 +243,12 @@ body {
   margin-bottom: 2px;
   font-size: 1.4rem;
 }
+.bulk-btn:hover,
 .add-new-btn:hover {
   max-width: 115px;
   animation: btn-shake 0.2s infinite;
 }
+.bulk-btn:active,
 .yes-btn:active,
 .no-btn:active,
 .remove-book-btn:active,
@@ -233,13 +262,12 @@ body {
   align-items: center;
   height: 29rem;
   overflow-x: auto;
-  scrollbar-width: none;
-  margin-bottom: 1rem;
 }
 .book-wrapper {
   position: relative;
   transition: 0.1s ease-out;
   margin-bottom: 0.5rem;
+  overflow-y: visible;
 }
 .inactive {
   opacity: 0;
@@ -286,6 +314,28 @@ body {
   margin-left: 2.4rem;
   margin-bottom: 2.5rem;
   width: 10rem;
+}
+.bulk-update-check {
+  position: absolute;
+  bottom: 0.5rem;
+  left: 0;
+  height: 1.6rem;
+  width: 1.6rem;
+  border: 2px solid var(--main-font);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+.bulk-update-check:checked:before {
+  content: "✓";
+  position: absolute;
+  top: -0.4rem;
+  left: 0.1rem;
+  right: 0;
+  bottom: 0;
+  font-size: 1.8rem;
+  line-height: 1.6rem;
 }
 .book-wrapper .remove-book-btn {
   font-size: 1.4rem;
@@ -489,6 +539,7 @@ input[type="number"]:focus {
   border: 2px solid var(--add-new-btn);
   box-shadow: 2px 2px var(--add-new-btn);
 }
+.bulk-btn,
 .yes-btn,
 .back-modal {
   color: #87b37a;
@@ -553,14 +604,13 @@ div.read-radio-btns {
   position: absolute;
   top: 0;
   left: 0;
-  opacity: 0.5;
+  opacity: 1;
 }
 .radio-container:hover input ~ .checkmark {
-  opacity: 1;
+  transform: scale(1.2);
 }
 .read-radio-btns input:checked ~ .checkmark {
-  transform: scale(1.4);
-  opacity: 1;
+  transform: scale(1.2);
 }
 .read-radio-btns input:checked ~ #green-light {
   background-color: #59e959;
@@ -637,7 +687,7 @@ div.read-radio-btns {
 }
 #accent-color .checkmark,
 #cover-color .checkmark {
-  opacity: 0.7;
+  opacity: 0.8;
 }
 #accent-color .radio-container:hover input ~ .checkmark,
 #cover-color .radio-container:hover input ~ .checkmark {
@@ -685,12 +735,127 @@ div.read-radio-btns {
 #mango-tango {
   background-color: #ff8c42;
 }
-@media screen and (max-width: 1297px) {
+.modal-bulk {
+  display: none;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+#bulk-update-form {
+  margin: auto;
+  height: 53rem;
+  width: 45rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  color: var(--main-font);
+  background-color: var(--background);
+  border: 3px solid var(--main-font);
+  box-shadow: 10px 10px var(--main-font);
+}
+form[name="bulk-update"] {
+  display: flex;
+  flex-direction: column;
+}
+#bulk-update-form h3 {
+  align-self: center;
+}
+#book-details {
+  display: grid;
+  grid-template-areas:
+    "title-label title-input"
+    "author-label author-input"
+    "pages-label pages-input";
+  grid-template-columns: 11rem 1fr;
+  grid-template-rows: repeat(3, 3rem);
+  grid-row-gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+#book-details input,
+#book-details label {
+  align-self: center;
+  margin-bottom: 0;
+}
+#book-details label[name="author"] {
+  grid-area: author-label;
+}
+#book-details label[name="book-title"] {
+  grid-area: title-label;
+}
+#book-details label[name="pages-read"] {
+  grid-area: pages-label;
+}
+#book-details input[name="author"] {
+  grid-area: author-input;
+}
+#book-details input[name="book-title"] {
+  grid-area: title-input;
+}
+#book-details input[name="pages-read"] {
+  grid-area: pages-input;
+}
+#book-status-bulk {
+  margin-bottom: 1.5rem;
+}
+#book-status-bulk .read-radio-btns {
+  margin-bottom: 0;
+}
+#book-status-bulk .radio-container:last-child {
+  margin-bottom: 0;
+}
+.modal-bulk #cover-color,
+.modal-bulk #accent-color,
+#book-status-bulk {
+  display: grid;
+  grid-template-areas: "label inputs";
+  grid-template-columns: 11rem 1fr;
+  grid-template-rows: 1fr;
+  align-items: center;
+}
+.modal-bulk #cover-color p,
+.modal-bulk #accent-color p,
+#book-status-bulk p {
+  grid-area: label;
+}
+.modal-bulk .radio-ctn-ctn,
+#book-status-bulk .read-radio-btns {
+  grid-area: inputs;
+}
+.modal-bulk .radio-ctn-ctn {
+  display: flex;
+  align-items: center;
+}
+.radio-ctn-ctn .sample-color {
+  top: auto;
+  left: 0;
+  margin-right: 1.5rem;
+}
+.radio-ctn-ctn .radio-container {
+  margin-right: 2rem;
+}
+#bulk-update-form input,
+#bulk-update-form label {
+  display: inline-block;
+}
+#bulk-update-form .read-radio-btns .radio-container {
+  display: block;
+}
+#submit-bulk {
+  width: 8rem;
+  height: 3.5rem;
+  align-self: center;
+}
+@media screen and (max-width: 1299px) {
   #search {
     position: relative;
     grid-area: search;
     justify-self: start;
-    margin-left: 100px;
     display: grid;
     place-items: center;
   }

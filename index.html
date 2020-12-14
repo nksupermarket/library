@@ -23,6 +23,16 @@
       alt="abstract illustration of lightbulbs"
       id="corner-right-img"
     />
+    <div class="end">
+      <div class="instructions">
+        click on a book to edit.<br /><br />drag to corresponding section to
+        change book status. <br /><br />
+        check the boxes on the books you'd like to bulk edit.
+      </div>
+      <div class="bulk-btn drawn-border" onclick="showBulkForm();">
+        bulk update
+      </div>
+    </div>
     <nav class="menu">
       <div class="paper-top"></div>
       <div id="logo">
@@ -344,6 +354,174 @@
           </div>
         </div>
       </form>
+    </div>
+    <div class="modal-bulk">
+      <div id="bulk-update-form" class="drawn-border">
+        <form name="bulk-update">
+          <h3 class="book-form-title">Bulk Update</h3>
+          <div class="exit drawn-border">X</div>
+          <div id="book-details">
+            <label name="book-title" class="form-label">Book Title</label>
+            <input
+              type="text"
+              name="book-title"
+              id="book-title-input"
+              class="form-input"
+            />
+            <label name="author" class="form-label">Author</label>
+            <input
+              type="text"
+              name="author"
+              id="book-author-input"
+              class="form-input"
+            />
+
+            <label name="pages-read" class="form-label">Pages Read</label>
+            <input
+              type="number"
+              name="pages-read"
+              id="book-pages"
+              class="form-input"
+            />
+          </div>
+          <div id="book-status-bulk">
+            <p>Book Status</p>
+            <div class="read-radio-btns">
+              <label class="form-label radio-container"
+                >currently reading
+                <input
+                  type="radio"
+                  name="read"
+                  class="book-status"
+                  value="currently reading"
+                />
+                <span class="checkmark" id="green-light"></span>
+              </label>
+              <label class="form-label radio-container"
+                >haven't started
+                <input
+                  type="radio"
+                  name="read"
+                  class="book-status"
+                  value="haven't started"
+                  required
+                />
+                <span class="checkmark" id="yellow-light"></span>
+              </label>
+              <label class="form-label radio-container"
+                >wishlist
+                <input
+                  type="radio"
+                  name="read"
+                  class="book-status"
+                  value="wishlist"
+                />
+                <span class="checkmark" id="star"
+                  ><i class="far fa-star"></i
+                ></span>
+              </label>
+              <label class="form-input radio-container"
+                >finished
+                <input
+                  type="radio"
+                  name="read"
+                  class="book-status"
+                  value="finished"
+                />
+                <span class="checkmark" id="check"
+                  ><i class="far fa-check-square"></i
+                ></span>
+              </label>
+            </div>
+          </div>
+          <div id="cover-color">
+            <p>Cover Color</p>
+            <div class="radio-ctn-ctn">
+              <label class="form-label radio-container">
+                <input
+                  type="radio"
+                  name="cover-color"
+                  class="color-radio"
+                  value="#FFF"
+                />
+                <span class="checkmark sample-color" id="white"></span>
+              </label>
+              <label class="form-label radio-container">
+                <input
+                  type="radio"
+                  name="cover-color"
+                  class="color-radio"
+                  value="#2C514C"
+                />
+                <span
+                  class="checkmark sample-color"
+                  id="dark-slate-gray"
+                ></span>
+              </label>
+            </div>
+          </div>
+          <div id="accent-color">
+            <p>Accent Color</p>
+            <div class="radio-ctn-ctn">
+              <label class="form-label radio-container">
+                <input
+                  type="radio"
+                  name="accent-color"
+                  class="color-radio"
+                  value="#FFF275"
+                />
+                <span class="checkmark sample-color" id="corn"></span>
+              </label>
+              <label class="form-label radio-container">
+                <input
+                  type="radio"
+                  name="accent-color"
+                  class="color-radio"
+                  value="#e54b4b"
+                />
+                <span class="checkmark sample-color" id="imperial-red"></span>
+              </label>
+              <label class="form-label radio-container">
+                <input
+                  type="radio"
+                  name="accent-color"
+                  class="color-radio"
+                  value="#A23E48"
+                />
+                <span class="checkmark sample-color" id="english-red"></span>
+              </label>
+              <label class="form-label radio-container">
+                <input
+                  type="radio"
+                  name="accent-color"
+                  class="color-radio"
+                  value="#FF8C42"
+                />
+                <span class="checkmark sample-color" id="mango-tango"></span>
+              </label>
+              <label class="form-label radio-container">
+                <input
+                  type="radio"
+                  name="accent-color"
+                  class="color-radio"
+                  value="#2C514C"
+                />
+                <span
+                  class="checkmark sample-color"
+                  id="dark-slate-gray"
+                ></span>
+              </label>
+            </div>
+          </div>
+          <input
+            type="button"
+            id="submit-bulk"
+            value="Submit"
+            class="next-modal drawn-border"
+            onclick="bulkUpdate()"
+          />
+        </form>
+      </div>
     </div>
     <script src="app.js"></script>
   </body>
