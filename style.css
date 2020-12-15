@@ -122,7 +122,7 @@ p {
   opacity: 0.5;
   color: var(--main-font);
 }
-.menu ul li.active {
+.menu ul li.active-menu {
   opacity: 1;
   border-bottom: 1px solid var(--main-font);
   border-bottom-right-radius: 50px 5px;
@@ -190,7 +190,7 @@ p {
   grid-area: content;
   margin-top: 1rem;
   width: 90%;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 .section {
   padding: 2rem;
@@ -272,6 +272,18 @@ p {
 .inactive {
   opacity: 0;
   pointer-events: none;
+  position: absolute;
+}
+.inactive-section {
+  display: none;
+}
+.active-section {
+  display: block;
+}
+.active-section .book-ctn {
+  flex-wrap: wrap;
+  height: 100%;
+  padding: 2.5rem 0;
 }
 .book-display {
   display: grid;
@@ -858,8 +870,5 @@ form[name="bulk-update"] {
     justify-self: start;
     display: grid;
     place-items: center;
-  }
-  #search input {
-    justify-self: start;
   }
 }

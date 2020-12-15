@@ -24,19 +24,28 @@ function addBookToLibrary() {
   let bookStatus;
   const readRadio = newBookForm.querySelectorAll("input[name = read]");
   for (i = 0; i < readRadio.length; i++) {
-    if (readRadio[i].checked) bookStatus = readRadio[i].value;
+    if (readRadio[i].checked) {
+      bookStatus = readRadio[i].value;
+      i = readRadio.length;
+    }
   }
   let bookCover;
   const coverRadio = newBookForm.querySelectorAll("input[name = cover-color]");
   for (i = 0; i < coverRadio.length; i++) {
-    if (coverRadio[i].checked) bookCover = coverRadio[i].value;
+    if (coverRadio[i].checked) {
+      bookCover = coverRadio[i].value;
+      i = coverRadio.length;
+    }
   }
   let bookAccent;
   const accentRadio = newBookForm.querySelectorAll(
     "input[name = accent-color]"
   );
   for (i = 0; i < accentRadio.length; i++) {
-    if (accentRadio[i].checked) bookAccent = accentRadio[i].value;
+    if (accentRadio[i].checked) {
+      bookAccent = accentRadio[i].value;
+      i = accentRadio.length;
+    }
   }
 
   let id;
@@ -73,11 +82,11 @@ const bookStatusArr = [
 const coverRadios = newBookForm.querySelectorAll("input[name=cover-color]");
 const accentRadios = newBookForm.querySelectorAll("input[name=accent-color]");
 let j = 0;
-for (let i = 0; i < 2; i++) {
+for (let i = 0; i < 25; i++) {
   for (let n = 0; n < bookStatusArr.length; n++) {
     const sampleBook = new Book(
-      `sample book`,
-      `sample author`,
+      `sample book${j}`,
+      `sample author${j}`,
       `${Math.floor(Math.random() * 5000)}`,
       bookStatusArr[n],
       `${coverRadios[Math.floor(Math.random() * 2)].value}`,
@@ -391,6 +400,7 @@ function onDrop(event) {
   if (obj.dataset == dropzone.dataset.status) return false;
 
   dropzone.prepend(draggableElement);
+  draggableElement.dataset.status = dropzone.dataset.status;
   myLibrary[whereIsBook(obj.id)].status = dropzone.dataset.status;
 }
 function appendSection(event) {
@@ -434,8 +444,7 @@ function bulkUpdate() {
 
   for (i = 0; i < bulkUpdateChecked.length; i++) {
     checkedBooks.push(bulkUpdateChecked[i].value);
-    bookWrapper = document.getElementById(bulkUpdateChecked[i].value);
-    bookWrapper.remove();
+    bulkUpdateChecked[i].checked = false;
   }
 
   const bookTitle = bulkEditForm.querySelector("input[name = book-title]")
@@ -446,31 +455,96 @@ function bulkUpdate() {
   let bookStatus;
   const readRadio = bulkEditForm.querySelectorAll("input[name = read]");
   for (i = 0; i < readRadio.length; i++) {
-    if (readRadio[i].checked) bookStatus = readRadio[i].value;
+    if (readRadio[i].checked) {
+      bookStatus = readRadio[i].value;
+      i = readRadio.length;
+    }
   }
   let bookCover;
   const coverRadio = bulkEditForm.querySelectorAll("input[name = cover-color]");
   for (i = 0; i < coverRadio.length; i++) {
-    if (coverRadio[i].checked) bookCover = coverRadio[i].value;
+    if (coverRadio[i].checked) {
+      bookCover = coverRadio[i].value;
+      i = coverRadio.length;
+    }
   }
   let bookAccent;
   const accentRadio = bulkEditForm.querySelectorAll(
     "input[name = accent-color]"
   );
-
   for (i = 0; i < accentRadio.length; i++) {
-    if (accentRadio[i].checked) bookAccent = accentRadio[i].value;
+    if (accentRadio[i].checked) {
+      bookAccent = accentRadio[i].value;
+      i = accentRadio.length;
+    }
   }
 
   for (n = 0; n < checkedBooks.length; n++) {
     const book = whereIsBook(checkedBooks[n]);
-    if (bookTitle) myLibrary[book].title = bookTitle;
-    if (bookAuthor) myLibrary[book].author = bookAuthor;
-    if (bookPages) myLibrary[book].pages = bookPages;
-    if (bookStatus) myLibrary[book].status = bookStatus;
-    if (bookCover) myLibrary[book].cover = bookCover;
-    if (bookAccent) myLibrary[book].accent = bookAccent;
-    displayBook(myLibrary[book]);
+    bookWrapper = document.getElementById(checkedBooks[n]);
+    if (bookTitle) {
+      myLibrary[book].title = bookTitle;
+      const bookDisplayTitle = bookWrapper.querySelector(".book-display-title");
+      bookDisplayTitle.innerHTML = `<span>${bookTitle}</span>`;
+    }
+    if (bookAuthor) {
+      myLibrary[book].Author = bookAuthor;
+      const bookDisplayAuthor = bookWrapper.querySelector(
+        ".book-display-author"
+      );
+      bookDisplayAuthor.innerHTML = `<span>${bookAuthor}</span>`;
+    }
+    if (bookPages) {
+      myLibrary[book].Pages = bookPages;
+      const bookDisplayPages = bookWrapper.querySelector(
+        ".book-display-pages-num"
+      );
+      bookDisplayPages.innerHTML = `<span>${bookPages}</span>`;
+    }
+    if (bookStatus) {
+      const newSection = document.querySelector(
+        `.book-ctn[data-status="${bookStatus}"]`
+      );
+      newSection.prepend(bookWrapper);
+      bookWrapper.dataset.status = bookStatus;
+      myLibrary[book].status = bookStatus;
+    }
+    if (bookCover) {
+      const secondPage = bookWrapper.querySelector(".second-page");
+      const bookDisplay = bookWrapper.querySelector(".book-display");
+      bookDisplay.style.backgroundColor = bookCover;
+      if (bookCover === "#2C514C") {
+        secondPage.style.borderLeft = "1px solid white";
+        bookDisplay.style.color = "white";
+      } else {
+        secondPage.style.borderLeft = "1px solid var(--main-font)";
+        bookDisplay.style.color = "#2C514C";
+      }
+      const coverInputs = bookWrapper.querySelectorAll(
+        `input[name="cover-color[${+checkedBooks[n]}]"`
+      );
+      for (i = 0; i < coverInputs.length; i++) {
+        if (bookCover == coverInputs[i].value) {
+          coverInputs[i].checked = true;
+          i = coverInputs.length;
+        }
+      }
+      myLibrary[book].cover = bookCover;
+    }
+    if (bookAccent) {
+      const bookDisplayTitle = bookWrapper.querySelector(".book-display-title");
+      bookDisplayTitle.style.borderLeft = `5px solid ${bookAccent}`;
+      const accentInputs = bookWrapper.querySelectorAll(
+        `input[name="accent-color[${+checkedBooks[n]}]"`
+      );
+      for (i = 0; i < accentInputs.length; i++) {
+        if (bookAccent == accentInputs[i].value) {
+          accentInputs[i].checked = true;
+          i = accentInputs.length;
+        }
+      }
+      myLibrary[book].accent = bookAccent;
+    }
   }
   modalBulk.style.display = "none";
   resetModalAndForm(modalBulk, "bulk-update");
@@ -486,7 +560,7 @@ nextModalBtns.forEach((btn) => {
     ];
     if (validateForm() === true) {
       if (btn.value === "Submit") {
-        resetModalAndForm();
+        resetModalAndForm(modal, "new-book");
         return;
       }
       const nextModal = newBookForm.querySelectorAll(".modal-sequence")[
@@ -594,4 +668,55 @@ function validateText() {
     }
   }
   return valid;
+}
+
+const bookWrappers = document.querySelectorAll(".book-wrapper");
+const searchBar = document.getElementById("search-bar");
+searchBar.addEventListener("input", () => {
+  const str = searchBar.value;
+
+  const found = myLibrary
+    .filter((obj) =>
+      Object.keys(obj).some((key) =>
+        obj[key].toLowerCase().includes(str.toLowerCase())
+      )
+    )
+    .map(function (obj) {
+      return obj.id;
+    });
+
+  for (i = 0; i < bookWrappers.length; i++) {
+    if (!found.includes(bookWrappers[i].id)) {
+      bookWrappers[i].classList.add("inactive");
+    } else {
+      bookWrappers[i].classList.remove("inactive");
+    }
+  }
+});
+
+const menuLinks = document.querySelectorAll("li");
+menuLinks.forEach((link) =>
+  link.addEventListener("click", () => {
+    link.classList.add("active-menu");
+    for (i = 0; i < menuLinks.length; i++) {
+      if (menuLinks[i] != link) menuLinks[i].classList.remove("active-menu");
+    }
+  })
+);
+const sections = document.querySelectorAll(".section");
+function displayMenu(menuItem) {
+  for (i = 0; i < sections.length; i++) {
+    if (menuItem != sections[i].dataset.name) {
+      sections[i].classList.add("inactive-section");
+      sections[i].classList.remove("active-section");
+    } else {
+      sections[i].classList.add("active-section");
+    }
+  }
+}
+function displayAll() {
+  for (i = 0; i < sections.length; i++) {
+    sections[i].classList.remove("active-section");
+    sections[i].classList.remove("inactive-section");
+  }
 }

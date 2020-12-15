@@ -25,8 +25,8 @@
     />
     <div class="end">
       <div class="instructions">
-        click on a book to edit.<br /><br />drag to corresponding section to
-        change book status. <br /><br />
+        click on a book to edit.<br /><br />drag to change book status.
+        <br /><br />
         check the boxes on the books you'd like to bulk edit.
       </div>
       <div class="bulk-btn drawn-border" onclick="showBulkForm();">
@@ -49,16 +49,16 @@
         <h1 class="title main-font">myLibrary</h1>
       </div>
       <ul class="main-links main-font">
-        <li class="active">all</li>
-        <li>currently reading</li>
-        <li>haven't started</li>
-        <li>wishlist</li>
-        <li>finished</li>
+        <li class="active-menu" onclick="displayAll()">all</li>
+        <li onclick="displayMenu(`currently reading`)">currently reading</li>
+        <li onclick="displayMenu(`haven't started`)">haven't started</li>
+        <li onclick="displayMenu(`wishlist`)">wishlist</li>
+        <li onclick="displayMenu(`finished`)">finished</li>
       </ul>
       <img src="02.png" alt="books flying out of a pot" id="menu-illus" />
     </nav>
     <div id="search" class="drawn-border">
-      <input type="text" name="search" id="search" />
+      <input type="text" name="search" id="search-bar" />
     </div>
     <div class="content">
       <div class="section" id="section-1" data-name="currently reading">
