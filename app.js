@@ -82,7 +82,7 @@ const bookStatusArr = [
 const coverRadios = newBookForm.querySelectorAll("input[name=cover-color]");
 const accentRadios = newBookForm.querySelectorAll("input[name=accent-color]");
 let j = 0;
-for (let i = 0; i < 25; i++) {
+for (let i = 0; i < 10; i++) {
   for (let n = 0; n < bookStatusArr.length; n++) {
     const sampleBook = new Book(
       `sample book${j}`,
@@ -432,7 +432,6 @@ addNewBtn.forEach((btn) => {
 
 const modalBulk = document.querySelector(".modal-bulk");
 const bulkEditForm = document.querySelector("form[name=bulk-update]");
-
 function showBulkForm() {
   modalBulk.style.cssText = "display: grid; place-items: center;";
 }
@@ -697,19 +696,23 @@ searchBar.addEventListener("input", () => {
 const menuLinks = document.querySelectorAll("li");
 menuLinks.forEach((link) =>
   link.addEventListener("click", () => {
+    const activeMenu = document.querySelector(".active-menu");
+    activeMenu.classList.remove("active-menu");
     link.classList.add("active-menu");
-    for (i = 0; i < menuLinks.length; i++) {
-      if (menuLinks[i] != link) menuLinks[i].classList.remove("active-menu");
-    }
   })
 );
+const arrowCtn = document.querySelectorAll(".arrow-ctn");
 const sections = document.querySelectorAll(".section");
 function displayMenu(menuItem) {
+  for (i = 0; i < arrowCtn.length; i++) {
+    arrowCtn[i].classList.add("inactive");
+  }
   for (i = 0; i < sections.length; i++) {
     if (menuItem != sections[i].dataset.name) {
-      sections[i].classList.add("inactive-section");
+      sections[i].classList.add("inactive");
       sections[i].classList.remove("active-section");
     } else {
+      sections[i].classList.remove("inactive");
       sections[i].classList.add("active-section");
     }
   }
@@ -717,6 +720,28 @@ function displayMenu(menuItem) {
 function displayAll() {
   for (i = 0; i < sections.length; i++) {
     sections[i].classList.remove("active-section");
-    sections[i].classList.remove("inactive-section");
+    sections[i].classList.remove("inactive");
+  }
+  for (i = 0; i < arrowCtn.length; i++) {
+    arrowCtn[i].classList.remove("inactive");
   }
 }
+
+let shiftInt;
+arrowCtn.forEach((arrow) =>
+  arrow.addEventListener("mousedown", () => {
+    shiftInt = setInterval(scrollLeft, 10);
+    function scrollLeft() {
+      if (arrow.firstElementChild.classList.contains("left")) {
+        arrow.nextElementSibling.scrollLeft -= 30;
+      } else {
+        arrow.previousElementSibling.scrollLeft += 30;
+      }
+    }
+  })
+);
+arrowCtn.forEach((arrow) =>
+  arrow.addEventListener("mouseup", function () {
+    clearInterval(shiftInt);
+  })
+);

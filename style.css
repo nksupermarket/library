@@ -194,12 +194,19 @@ p {
 }
 .section {
   padding: 2rem;
+  padding-bottom: 0;
   box-sizing: border-box;
+  display: grid;
+  grid-template-areas:
+    "header header header"
+    "l-arrow book-ctn r-arrow";
+  grid-template-columns: 7rem 1fr 7rem;
 }
 .section:last-child {
   padding-bottom: 4rem;
 }
 .section-header {
+  grid-area: header;
   display: flex;
   align-items: center;
   border-bottom-right-radius: 100px 5px;
@@ -258,10 +265,46 @@ p {
   box-shadow: none;
 }
 .book-ctn {
+  grid-area: book-ctn;
   display: flex;
   align-items: center;
   height: 29rem;
   overflow-x: auto;
+  scrollbar-width: none;
+}
+.arrow-ctn {
+  display: flex;
+  cursor: pointer;
+  opacity: 0.8;
+}
+.arrow-ctn:hover {
+  opacity: 1;
+}
+.arrow {
+  align-self: center;
+  height: 3rem;
+  width: 3rem;
+  border: solid var(--main-font);
+  filter: brightness(1.4);
+  border-width: 0 1.5rem 1.5rem 0;
+  display: inline-block;
+  padding: 1.5rem;
+  box-sizing: border-box;
+  border-bottom-left-radius: 255px 10px;
+  position: relative;
+}
+.right {
+  grid-area: r-arrow;
+  left: 1.7rem;
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  left
+}
+.left {
+  grid-area: l-arrow;
+  left: 1rem;
+  transform: rotate(135deg);
+  -webkit-transform: rotate(135deg);
 }
 .book-wrapper {
   position: relative;
@@ -274,16 +317,23 @@ p {
   pointer-events: none;
   position: absolute;
 }
-.inactive-section {
-  display: none;
+.section.inactive {
+  top: 0;
+  left: 0;
 }
 .active-section {
-  display: block;
+  grid-template-areas: 
+  "header"
+  "book-ctn";
+  grid-template-columns: 1fr;
 }
 .active-section .book-ctn {
   flex-wrap: wrap;
   height: 100%;
   padding: 2.5rem 0;
+}
+.active-section .book-wrapper {
+  margin: 0 2.5rem 2.5rem 0;
 }
 .book-display {
   display: grid;
