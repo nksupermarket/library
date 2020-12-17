@@ -19,7 +19,7 @@
     <div class="paper-top"></div>
     <div class="paper-end"></div>
     <img
-      src="07.png"
+      src="07-scaled.png"
       alt="abstract illustration of lightbulbs"
       id="corner-right-img"
     />
@@ -37,12 +37,12 @@
       <div class="paper-top"></div>
       <div id="logo">
         <img
-          src="left-ear.png"
+          src="left-ear-scaled.png"
           alt="abstract illustration of flying ears"
           id="logo-left-ear"
         />
         <img
-          src="right-ear.png"
+          src="right-ear-scaled.png"
           alt="abstract illustration of flying ears"
           id="logo-right-ear"
         />
@@ -55,7 +55,11 @@
         <li onclick="displayMenu(`wishlist`)">wishlist</li>
         <li onclick="displayMenu(`finished`)">finished</li>
       </ul>
-      <img src="02.png" alt="books flying out of a pot" id="menu-illus" />
+      <img
+        src="02-scaled.png"
+        alt="books flying out of a pot"
+        id="menu-illus"
+      />
     </nav>
     <div id="search" class="drawn-border">
       <input type="text" name="search" id="search-bar" />
@@ -77,7 +81,12 @@
           ondragover="onDragOver(event);"
           ondrop="onDrop(event);"
           data-status="currently reading"
-        ></div>
+        >
+          <div class="nothing-here inactive">
+            <p>there's nothing here</p>
+            <img src="02.png" alt="absurb illustration of fish walking" />
+          </div>
+        </div>
         <div class="arrow-ctn">
           <div class="arrow right drawn-border"></div>
         </div>
@@ -98,7 +107,12 @@
           ondragover="onDragOver(event);"
           ondrop="onDrop(event);"
           data-status="haven't started"
-        ></div>
+        >
+          <div class="nothing-here inactive">
+            <p>there's nothing here</p>
+            <img src="02.png" alt="absurb illustration of fish walking" />
+          </div>
+        </div>
         <div class="arrow-ctn">
           <div class="arrow right drawn-border"></div>
         </div>
@@ -119,7 +133,12 @@
           ondragover="onDragOver(event);"
           ondrop="onDrop(event);"
           data-status="wishlist"
-        ></div>
+        >
+          <div class="nothing-here inactive">
+            <p>there's nothing here</p>
+            <img src="02.png" alt="absurb illustration of fish walking" />
+          </div>
+        </div>
         <div class="arrow-ctn">
           <div class="arrow right drawn-border"></div>
         </div>
@@ -140,7 +159,12 @@
           ondragover="onDragOver(event);"
           ondrop="onDrop(event);"
           data-status="finished"
-        ></div>
+        >
+          <div class="nothing-here inactive">
+            <p>there's nothing here</p>
+            <img src="02.png" alt="absurb illustration of fish walking" />
+          </div>
+        </div>
         <div class="arrow-ctn">
           <div class="arrow right drawn-border"></div>
         </div>

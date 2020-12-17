@@ -15,6 +15,7 @@ submit.addEventListener("click", () => {
   if (validateForm()) {
     const book = addBookToLibrary();
     displayBook(book);
+    checkOverflow();
   }
 });
 function addBookToLibrary() {
@@ -82,7 +83,7 @@ const bookStatusArr = [
 const coverRadios = newBookForm.querySelectorAll("input[name=cover-color]");
 const accentRadios = newBookForm.querySelectorAll("input[name=accent-color]");
 let j = 0;
-for (let i = 0; i < 10; i++) {
+for (let i = 0; i < 4; i++) {
   for (let n = 0; n < bookStatusArr.length; n++) {
     const sampleBook = new Book(
       `sample book${j}`,
@@ -97,7 +98,6 @@ for (let i = 0; i < 10; i++) {
     displayBook(sampleBook);
   }
 }
-
 function displayBook(a) {
   const section = document.querySelector(`.section[data-name = "${a.status}"]`);
   const bookContainer = section.querySelector(".book-ctn");
@@ -165,6 +165,7 @@ function displayBook(a) {
         myLibrary.splice(whereIsBook(book), 1);
         if (book === bookWrapper.id) bookWrapper.remove();
         removeBookPopUp.classList.add("inactive");
+        checkBookCtn();
       });
 
       noBtn.addEventListener("click", () => {
@@ -311,6 +312,10 @@ function displayBook(a) {
         removeBookBtn.classList.remove("inactive");
 
         editBookText();
+
+        bookDisplay.ontransitionend = checkOverflow;
+
+        // setTimeout(checkOverflow, 200);
       }
     });
   })();
@@ -351,6 +356,8 @@ function displayBook(a) {
     bookDisplayPages.firstElementChild.setAttribute("contenteditable", "false");
     exitBtn.classList.add("inactive");
     removeBookBtn.classList.add("inactive");
+
+    bookDisplay.ontransitionend = checkOverflow;
   }
 
   bookDisplay.appendChild(firstPage);
@@ -369,22 +376,22 @@ function onDragStart(event) {
 }
 function onDragEnter(event) {
   event.preventDefault();
-  const section = appendSection(event);
+  const section = findSection(event);
   section.classList.add("drag-over");
 }
 function onDragLeave(event) {
-  const section = appendSection(event);
+  const section = findSection(event);
   section.classList.remove("drag-over");
 }
 function onDragOver(event) {
   event.preventDefault();
-  const section = appendSection(event);
+  const section = findSection(event);
   section.classList.add("drag-over");
 }
 function onDrop(event) {
   event.preventDefault();
 
-  const section = appendSection(event);
+  const section = findSection(event);
   section.classList.remove("drag-over");
 
   const objStr = event.dataTransfer.getData("text/plain");
@@ -402,11 +409,13 @@ function onDrop(event) {
   dropzone.prepend(draggableElement);
   draggableElement.dataset.status = dropzone.dataset.status;
   myLibrary[whereIsBook(obj.id)].status = dropzone.dataset.status;
+
+  checkBookCtn();
 }
-function appendSection(event) {
+function findSection(event) {
   let section = event.target;
   let i = 0;
-  while (!section.getAttribute("data-name") && i < 10) {
+  while (!section.getAttribute("data-name") && i < 40) {
     section = section.parentElement;
     i++;
   }
@@ -547,6 +556,8 @@ function bulkUpdate() {
   }
   modalBulk.style.display = "none";
   resetModalAndForm(modalBulk, "bulk-update");
+
+  checkBookCtn();
 }
 
 const modalSequence = newBookForm.querySelectorAll(".modal-sequence");
@@ -675,11 +686,15 @@ searchBar.addEventListener("input", () => {
   const str = searchBar.value;
 
   const found = myLibrary
-    .filter((obj) =>
-      Object.keys(obj).some((key) =>
-        obj[key].toLowerCase().includes(str.toLowerCase())
-      )
-    )
+    .filter((obj) => {
+      for (key in obj) {
+        if (key === "title" || key === "author") {
+          if (obj[key].toLowerCase().includes(str.toLowerCase())) {
+            return true;
+          }
+        }
+      }
+    })
     .map(function (obj) {
       return obj.id;
     });
@@ -691,6 +706,8 @@ searchBar.addEventListener("input", () => {
       bookWrappers[i].classList.remove("inactive");
     }
   }
+
+  checkBookCtn();
 });
 
 const menuLinks = document.querySelectorAll("li");
@@ -722,20 +739,18 @@ function displayAll() {
     sections[i].classList.remove("active-section");
     sections[i].classList.remove("inactive");
   }
-  for (i = 0; i < arrowCtn.length; i++) {
-    arrowCtn[i].classList.remove("inactive");
-  }
+  checkBookCtn();
 }
 
 let shiftInt;
 arrowCtn.forEach((arrow) =>
   arrow.addEventListener("mousedown", () => {
-    shiftInt = setInterval(scrollLeft, 10);
+    shiftInt = setInterval(scrollLeft, 1);
     function scrollLeft() {
       if (arrow.firstElementChild.classList.contains("left")) {
-        arrow.nextElementSibling.scrollLeft -= 30;
+        arrow.nextElementSibling.scrollLeft -= 10;
       } else {
-        arrow.previousElementSibling.scrollLeft += 30;
+        arrow.previousElementSibling.scrollLeft += 10;
       }
     }
   })
@@ -745,3 +760,43 @@ arrowCtn.forEach((arrow) =>
     clearInterval(shiftInt);
   })
 );
+
+window.onload = checkBookCtn;
+const bookCtns = document.querySelectorAll(".book-ctn");
+function checkBookCtn() {
+  for (let i = 0; i < bookCtns.length; i++) {
+    const filler = bookCtns[i].querySelector(".nothing-here");
+    const bookWrapper = bookCtns[i].querySelector(
+      ".book-wrapper:not(.inactive)"
+    );
+    if (!bookWrapper) {
+      filler.classList.remove("inactive");
+      toggleArrows(bookCtns[i], "add");
+    } else if (bookWrapper) {
+      filler.classList.add("inactive");
+    }
+  }
+  checkOverflow();
+}
+function toggleArrows(bookCtn, action) {
+  switch (action) {
+    case "add":
+      bookCtn.previousElementSibling.classList.add("inactive");
+      bookCtn.nextElementSibling.classList.add("inactive");
+      break;
+    case "remove":
+      bookCtn.previousElementSibling.classList.remove("inactive");
+      bookCtn.nextElementSibling.classList.remove("inactive");
+      break;
+  }
+}
+window.onresize = checkOverflow;
+function checkOverflow() {
+  for (i = 0; i < bookCtns.length; i++) {
+    if (bookCtns[i].scrollWidth <= bookCtns[i].offsetWidth) {
+      toggleArrows(bookCtns[i], "add");
+    } else {
+      toggleArrows(bookCtns[i], "remove");
+    }
+  }
+}

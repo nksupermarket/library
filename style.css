@@ -264,14 +264,6 @@ p {
 .add-new-btn:active {
   box-shadow: none;
 }
-.book-ctn {
-  grid-area: book-ctn;
-  display: flex;
-  align-items: center;
-  height: 29rem;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
 .arrow-ctn {
   display: flex;
   cursor: pointer;
@@ -286,7 +278,7 @@ p {
   width: 3rem;
   border: solid var(--main-font);
   filter: brightness(1.4);
-  border-width: 0 1.5rem 1.5rem 0;
+  border-width: 0 0.5rem 0.5rem 0;
   display: inline-block;
   padding: 1.5rem;
   box-sizing: border-box;
@@ -305,6 +297,27 @@ p {
   left: 1rem;
   transform: rotate(135deg);
   -webkit-transform: rotate(135deg);
+}
+.book-ctn {
+  grid-area: book-ctn;
+  display: flex;
+  align-items: center;
+  height: 29rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.nothing-here {
+  margin: 0 auto;
+  font-family: "shadows into light", sans-serif;
+  display: flex;
+  align-items: center;
+}
+.nothing-here p {
+  font-size: 2.5rem;
+  margin-right: 4rem;
+}
+.nothing-here img {
+  height: 25rem;
 }
 .book-wrapper {
   position: relative;
