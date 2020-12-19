@@ -170,12 +170,32 @@ p {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: start;
 }
-.instructions {
-  font-size: 1.6rem;
-  margin: 0 1.6rem;
+.sample-book-counter input::-webkit-outer-spin-button,
+.sample-book-counter input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.sample-book-counter input[type=number] {
+  display: inline-block;
+  width: 2.5rem;
+  height:2rem;
+  padding: 0;
+  text-align: center;
+  border: none;
+  background-color: yellow;
   color: var(--main-font);
+  border-radius: 0;
+  -moz-appearance: textfield;
+}
+.sample-book-counter input[type=number]:focus {
+  border: none;
+}
+.end p {
+  font-size: 1.6rem;
+  color: var(--main-font);
+  margin: 0 1.6rem;
   margin-bottom: 2rem;
 }
 .bulk-btn {
@@ -184,6 +204,7 @@ p {
   font-weight: bold;
   padding: 1rem 2rem;
   cursor: pointer;
+  align-self: center;
 }
 .content {
   justify-self: center;
@@ -268,9 +289,13 @@ p {
   display: flex;
   cursor: pointer;
   opacity: 0.8;
+  transition: 0.2s ease-out;
 }
 .arrow-ctn:hover {
   opacity: 1;
+}
+.arrow-ctn.inactive {
+    position: relative;
 }
 .arrow {
   align-self: center;
@@ -344,6 +369,7 @@ p {
   flex-wrap: wrap;
   height: 100%;
   padding: 2.5rem 0;
+  align-items: start;
 }
 .active-section .book-wrapper {
   margin: 0 2.5rem 2.5rem 0;

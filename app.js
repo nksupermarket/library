@@ -1,5 +1,20 @@
 let myLibrary = [];
 
+window.onload = function () {
+  searchBar.value = "";
+  if (displayLibrary) myLibrary = displayLibrary();
+  if (!document.querySelector("#sample-book"))
+    displaySampleBook(sampleCounter.value);
+  checkBookCtn();
+};
+function displayLibrary() {
+  const libraryInStorage = JSON.parse(localStorage.getItem("library"));
+  for (let i = 0; i < libraryInStorage.length; i++) {
+    displayBook(libraryInStorage[i]);
+  }
+  return libraryInStorage;
+}
+
 function Book(title, author, pages, status, cover, accent, id) {
   this.title = title;
   this.author = author;
@@ -15,7 +30,7 @@ submit.addEventListener("click", () => {
   if (validateForm()) {
     const book = addBookToLibrary();
     displayBook(book);
-    checkOverflow();
+    checkBookCtn();
   }
 });
 function addBookToLibrary() {
@@ -52,6 +67,12 @@ function addBookToLibrary() {
   let id;
   if (myLibrary.length === 0) {
     id = 0;
+  } else if (myLibrary[myLibrary.length - 1].id === "sample-book") {
+    const revLibrary = myLibrary.slice().reverse();
+    const lastRealBook = revLibrary.find((book) => {
+      if (typeof book.id == "number") return book;
+    });
+    id = +lastRealBook.id + 1;
   } else {
     id = +myLibrary[myLibrary.length - 1].id + 1;
   }
@@ -67,37 +88,10 @@ function addBookToLibrary() {
   );
 
   myLibrary.push(newBook);
+  localStorage.setItem("library", JSON.stringify(myLibrary));
   return newBook;
 }
 
-for (i = 0; i < myLibrary.length; i++) {
-  displayBook(myLibrary[i]);
-}
-
-const bookStatusArr = [
-  "currently reading",
-  "haven't started",
-  "wishlist",
-  "finished",
-];
-const coverRadios = newBookForm.querySelectorAll("input[name=cover-color]");
-const accentRadios = newBookForm.querySelectorAll("input[name=accent-color]");
-let j = 0;
-for (let i = 0; i < 4; i++) {
-  for (let n = 0; n < bookStatusArr.length; n++) {
-    const sampleBook = new Book(
-      `sample book${j}`,
-      `sample author${j}`,
-      `${Math.floor(Math.random() * 5000)}`,
-      bookStatusArr[n],
-      `${coverRadios[Math.floor(Math.random() * 2)].value}`,
-      `${accentRadios[Math.floor(Math.random() * 5)].value}`,
-      `${j++}`
-    );
-    myLibrary.push(sampleBook);
-    displayBook(sampleBook);
-  }
-}
 function displayBook(a) {
   const section = document.querySelector(`.section[data-name = "${a.status}"]`);
   const bookContainer = section.querySelector(".book-ctn");
@@ -163,6 +157,7 @@ function displayBook(a) {
 
       yesBtn.addEventListener("click", () => {
         myLibrary.splice(whereIsBook(book), 1);
+        localStorage.setItem("library", JSON.stringify(myLibrary));
         if (book === bookWrapper.id) bookWrapper.remove();
         removeBookPopUp.classList.add("inactive");
         checkBookCtn();
@@ -291,6 +286,7 @@ function displayBook(a) {
         e.target.name.includes("accent")
           ? (myLibrary[whereIsBook(a.id)].accent = e.target.value)
           : (myLibrary[whereIsBook(a.id)].cover = e.target.value);
+        localStorage.setItem("library", JSON.stringify(myLibrary));
       })
     );
   })();
@@ -328,14 +324,15 @@ function displayBook(a) {
       p.addEventListener("input", () => {
         switch (p.classList.value) {
           case "book-display-title":
-            myLibrary[whereIsBook(a.id)].title = p.textContent;
+            myLibrary[whereIsBook(bookWrapper.id)].title = p.textContent;
             break;
           case "book-display-author":
-            myLibrary[whereIsBook(a.id)].author = p.textContent;
+            myLibrary[whereIsBook(bookWrapper.id)].author = p.textContent;
             break;
           case "book-display-pages-num":
-            myLibrary[whereIsBook(a.id)].pages = p.textContent;
+            myLibrary[whereIsBook(bookWrapper.id)].pages = p.textContent;
         }
+        localStorage.setItem("library", JSON.stringify(myLibrary));
       })
     );
   }
@@ -365,6 +362,7 @@ function displayBook(a) {
 
   bookContainer.prepend(bookWrapper);
 }
+
 const whereIsBook = (bookId) => {
   for (i = 0; i < myLibrary.length; i++)
     if (bookId == myLibrary[i].id) return i;
@@ -439,6 +437,45 @@ addNewBtn.forEach((btn) => {
   });
 });
 
+const sampleCounter = document.getElementsByName("sample-book-counter")[0];
+sampleCounter.addEventListener("input", () => {
+  removeSampleBook();
+  displaySampleBook(sampleCounter.value);
+  localStorage.setItem("library", JSON.stringify(myLibrary));
+  checkBookCtn();
+});
+function removeSampleBook() {
+  const sampleBooks = document.querySelectorAll("#sample-book");
+  for (let i = 0; i < sampleBooks.length; i++) sampleBooks[i].remove();
+  myLibrary = myLibrary.filter((obj) => obj.id != "sample-book");
+}
+function displaySampleBook(counter) {
+  if (counter > 20) counter = 20;
+  const bookStatusArr = [
+    "currently reading",
+    "haven't started",
+    "wishlist",
+    "finished",
+  ];
+  const coverRadios = newBookForm.querySelectorAll("input[name=cover-color]");
+  const accentRadios = newBookForm.querySelectorAll("input[name=accent-color]");
+  let bookCounter = 0;
+  for (let i = 0; i < +counter; i++) {
+    for (let n = 0; n < bookStatusArr.length; n++) {
+      const sampleBook = new Book(
+        `sample book${bookCounter}`,
+        `sample author${bookCounter++}`,
+        `${Math.floor(Math.random() * 5000)}`,
+        bookStatusArr[n],
+        `${coverRadios[Math.floor(Math.random() * 2)].value}`,
+        `${accentRadios[Math.floor(Math.random() * 5)].value}`,
+        `sample-book`
+      );
+      displayBook(sampleBook);
+      myLibrary.push(sampleBook);
+    }
+  }
+}
 const modalBulk = document.querySelector(".modal-bulk");
 const bulkEditForm = document.querySelector("form[name=bulk-update]");
 function showBulkForm() {
@@ -496,14 +533,14 @@ function bulkUpdate() {
       bookDisplayTitle.innerHTML = `<span>${bookTitle}</span>`;
     }
     if (bookAuthor) {
-      myLibrary[book].Author = bookAuthor;
+      myLibrary[book].author = bookAuthor;
       const bookDisplayAuthor = bookWrapper.querySelector(
         ".book-display-author"
       );
       bookDisplayAuthor.innerHTML = `<span>${bookAuthor}</span>`;
     }
     if (bookPages) {
-      myLibrary[book].Pages = bookPages;
+      myLibrary[book].pages = bookPages;
       const bookDisplayPages = bookWrapper.querySelector(
         ".book-display-pages-num"
       );
@@ -558,6 +595,7 @@ function bulkUpdate() {
   resetModalAndForm(modalBulk, "bulk-update");
 
   checkBookCtn();
+  localStorage.setItem("library", JSON.stringify(myLibrary));
 }
 
 const modalSequence = newBookForm.querySelectorAll(".modal-sequence");
@@ -680,9 +718,9 @@ function validateText() {
   return valid;
 }
 
-const bookWrappers = document.querySelectorAll(".book-wrapper");
 const searchBar = document.getElementById("search-bar");
 searchBar.addEventListener("input", () => {
+  const bookWrappers = document.querySelectorAll(".book-wrapper");
   const str = searchBar.value;
 
   const found = myLibrary
@@ -696,14 +734,13 @@ searchBar.addEventListener("input", () => {
       }
     })
     .map(function (obj) {
-      return obj.id;
+      return String(obj.id);
     });
-
-  for (i = 0; i < bookWrappers.length; i++) {
-    if (!found.includes(bookWrappers[i].id)) {
-      bookWrappers[i].classList.add("inactive");
-    } else {
+  for (let i = 0; i < bookWrappers.length; i++) {
+    if (found.includes(bookWrappers[i].id)) {
       bookWrappers[i].classList.remove("inactive");
+    } else {
+      bookWrappers[i].classList.add("inactive");
     }
   }
 
@@ -761,7 +798,6 @@ arrowCtn.forEach((arrow) =>
   })
 );
 
-window.onload = checkBookCtn;
 const bookCtns = document.querySelectorAll(".book-ctn");
 function checkBookCtn() {
   for (let i = 0; i < bookCtns.length; i++) {
