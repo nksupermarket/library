@@ -9,9 +9,11 @@ window.onload = function () {
   checkBookCtn();
 };
 function displayLibrary() {
-  const libraryInStorage = JSON.parse(localStorage.getItem("library"));
-  for (let i = 0; i < libraryInStorage.length; i++) {
-    displayBook(libraryInStorage[i]);
+  let libraryInStorage = JSON.parse(localStorage.getItem("library"));
+  if (libraryInStorage) {
+    for (let i = 0; i < libraryInStorage.length; i++) {
+      displayBook(libraryInStorage[i]);
+    }
   }
   return libraryInStorage;
 }
