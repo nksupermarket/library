@@ -3,7 +3,8 @@ let myLibrary = [];
 window.onload = function () {
   searchBar.value = "";
   if (displayLibrary) myLibrary = displayLibrary();
-  if (!document.querySelector("#sample-book"))
+  sampleCounter.value = localStorage.getItem("sample counter");
+  if (!document.querySelector(".sample-book"))
     displaySampleBook(sampleCounter.value);
   checkBookCtn();
 };
@@ -133,6 +134,8 @@ function displayBook(a) {
   }
 
   const firstPageContents = displayFirstPage();
+  if (firstPageContents[0].textContent.includes("sample book"))
+    bookWrapper.classList.add("sample-book");
 
   firstPage.appendChild(firstPageContents[0]);
   firstPage.appendChild(firstPageContents[1]);
@@ -145,28 +148,8 @@ function displayBook(a) {
     const currentBook = removeBookBtn.dataset.id;
 
     removeBookBtn.addEventListener("click", () => {
-      removeBook(currentBook);
+      showPopUp(currentBook);
     });
-
-    function removeBook(book) {
-      const removeBookPopUp = document.querySelector(".pop-up");
-      removeBookPopUp.classList.remove("inactive");
-
-      const yesBtn = removeBookPopUp.querySelector(".yes-btn");
-      const noBtn = removeBookPopUp.querySelector(".no-btn");
-
-      yesBtn.addEventListener("click", () => {
-        myLibrary.splice(whereIsBook(book), 1);
-        localStorage.setItem("library", JSON.stringify(myLibrary));
-        if (book === bookWrapper.id) bookWrapper.remove();
-        removeBookPopUp.classList.add("inactive");
-        checkBookCtn();
-      });
-
-      noBtn.addEventListener("click", () => {
-        removeBookPopUp.classList.add("inactive");
-      });
-    }
 
     return removeBookBtn;
   }
@@ -361,8 +344,29 @@ function displayBook(a) {
   bookDisplay.appendChild(secondPage);
 
   bookContainer.prepend(bookWrapper);
-}
 
+  return bookWrapper;
+}
+let currentBook;
+const removeBookPopUp = document.querySelector(".pop-up");
+function showPopUp(book) {
+  removeBookPopUp.classList.remove("inactive");
+  return (currentBook = book);
+}
+const yesBtn = removeBookPopUp.querySelector(".yes-btn");
+const noBtn = removeBookPopUp.querySelector(".no-btn");
+
+yesBtn.addEventListener("click", () => {
+  myLibrary.splice(whereIsBook(currentBook), 1);
+  localStorage.setItem("library", JSON.stringify(myLibrary));
+  document.getElementById(currentBook).remove();
+  removeBookPopUp.classList.add("inactive");
+  checkBookCtn();
+});
+
+noBtn.addEventListener("click", () => {
+  removeBookPopUp.classList.add("inactive");
+});
 const whereIsBook = (bookId) => {
   for (i = 0; i < myLibrary.length; i++)
     if (bookId == myLibrary[i].id) return i;
@@ -441,13 +445,14 @@ const sampleCounter = document.getElementsByName("sample-book-counter")[0];
 sampleCounter.addEventListener("input", () => {
   removeSampleBook();
   displaySampleBook(sampleCounter.value);
+  localStorage.setItem("sample counter", sampleCounter.value);
   localStorage.setItem("library", JSON.stringify(myLibrary));
   checkBookCtn();
 });
 function removeSampleBook() {
-  const sampleBooks = document.querySelectorAll("#sample-book");
+  const sampleBooks = document.querySelectorAll(".sample-book");
   for (let i = 0; i < sampleBooks.length; i++) sampleBooks[i].remove();
-  myLibrary = myLibrary.filter((obj) => obj.id != "sample-book");
+  myLibrary = myLibrary.filter((obj) => !obj.id.includes("sample-book"));
 }
 function displaySampleBook(counter) {
   if (counter > 20) counter = 20;
@@ -464,14 +469,14 @@ function displaySampleBook(counter) {
     for (let n = 0; n < bookStatusArr.length; n++) {
       const sampleBook = new Book(
         `sample book${bookCounter}`,
-        `sample author${bookCounter++}`,
+        `sample author${bookCounter}`,
         `${Math.floor(Math.random() * 5000)}`,
         bookStatusArr[n],
         `${coverRadios[Math.floor(Math.random() * 2)].value}`,
         `${accentRadios[Math.floor(Math.random() * 5)].value}`,
-        `sample-book`
+        `sample-book${bookCounter++}`
       );
-      displayBook(sampleBook);
+      displayBook(sampleBook).classList.add("sample-book");
       myLibrary.push(sampleBook);
     }
   }
