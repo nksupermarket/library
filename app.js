@@ -71,12 +71,12 @@ function addBookToLibrary() {
   let id;
   if (myLibrary.length === 0) {
     id = 0;
-  } else if (myLibrary[myLibrary.length - 1].id === "sample-book") {
+  } else if (myLibrary[myLibrary.length - 1].id.includes("sample-book")) {
     const revLibrary = myLibrary.slice().reverse();
     const lastRealBook = revLibrary.find((book) => {
       if (typeof book.id == "number") return book;
     });
-    id = +lastRealBook.id + 1;
+    lastRealBook ? (id = +lastRealBook.id + 1) : (id = 0);
   } else {
     id = +myLibrary[myLibrary.length - 1].id + 1;
   }
@@ -366,10 +366,10 @@ yesBtn.addEventListener("click", () => {
   removeBookPopUp.classList.add("inactive");
   checkBookCtn();
 });
-
 noBtn.addEventListener("click", () => {
   removeBookPopUp.classList.add("inactive");
 });
+
 const whereIsBook = (bookId) => {
   for (i = 0; i < myLibrary.length; i++)
     if (bookId == myLibrary[i].id) return i;
@@ -414,6 +414,9 @@ function onDrop(event) {
   dropzone.prepend(draggableElement);
   draggableElement.dataset.status = dropzone.dataset.status;
   myLibrary[whereIsBook(obj.id)].status = dropzone.dataset.status;
+  myLibrary.push(myLibrary[whereIsBook(obj.id)]);
+  myLibrary.splice(whereIsBook(obj.id), 1);
+  localStorage.setItem("library", JSON.stringify(myLibrary));
 
   checkBookCtn();
 }
@@ -455,7 +458,10 @@ sampleCounter.addEventListener("input", () => {
 function removeSampleBook() {
   const sampleBooks = document.querySelectorAll(".sample-book");
   for (let i = 0; i < sampleBooks.length; i++) sampleBooks[i].remove();
-  myLibrary = myLibrary.filter((obj) => !obj.id.includes("sample-book"));
+  myLibrary = myLibrary.filter(checkId);
+}
+function checkId(obj) {
+  if (typeof obj.id === "number") return obj;
 }
 function displaySampleBook(counter) {
   if (counter > 20) counter = 20;
@@ -561,6 +567,9 @@ function bulkUpdate() {
       newSection.prepend(bookWrapper);
       bookWrapper.dataset.status = bookStatus;
       myLibrary[book].status = bookStatus;
+      myLibrary.push(myLibrary[book]);
+
+      myLibrary.splice(book, 1);
     }
     if (bookCover) {
       const secondPage = bookWrapper.querySelector(".second-page");
