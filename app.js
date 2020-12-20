@@ -3,7 +3,8 @@ let myLibrary = [];
 window.onload = function () {
   searchBar.value = "";
   if (displayLibrary()) myLibrary = displayLibrary();
-  sampleCounter.value = localStorage.getItem("sample counter");
+  if (localStorage.getItem("sample counter"))
+    sampleCounter.value = localStorage.getItem("sample counter");
   if (!document.querySelector(".sample-book"))
     displaySampleBook(sampleCounter.value);
   checkBookCtn();
