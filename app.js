@@ -2,7 +2,7 @@ let myLibrary = [];
 
 window.onload = function () {
   searchBar.value = "";
-  if (displayLibrary()) myLibrary = displayLibrary();
+  if (localStorage.getItem("library")) myLibrary = displayLibrary();
   if (localStorage.getItem("sample counter"))
     sampleCounter.value = localStorage.getItem("sample counter");
   if (!document.querySelector(".sample-book"))
