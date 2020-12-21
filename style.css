@@ -135,6 +135,7 @@ p {
   margin-left: -17px;
 }
 #search {
+  grid-area: search;
   position: absolute;
   top: 80px;
   justify-self: center;

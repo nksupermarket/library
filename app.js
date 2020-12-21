@@ -568,7 +568,6 @@ function bulkUpdate() {
       bookWrapper.dataset.status = bookStatus;
       myLibrary[book].status = bookStatus;
       myLibrary.push(myLibrary[book]);
-
       myLibrary.splice(book, 1);
     }
     if (bookCover) {
