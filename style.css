@@ -81,7 +81,7 @@ p {
   height: 100vh;
   position: fixed;
   display: grid;
-  grid-template-rows: 200px auto 300px;
+  grid-template-rows: 200px auto auto 300px;
 }
 #logo {
   place-self: center;
@@ -115,10 +115,11 @@ p {
 .menu ul li {
   text-align: center;
   cursor: pointer;
-  margin: 15px 0;
-  padding: 15px 0;
+  margin: 0.5rem 0;
+  padding: 1rem 0;
   font-weight: 500;
-  font-size: 2rem;
+  font-family: "shadows into light", sans-serif;
+  font-size: 2.2rem;
   opacity: 0.5;
   color: var(--main-font);
 }
@@ -128,6 +129,29 @@ p {
   border-bottom-right-radius: 50px 5px;
   border-bottom-left-radius: 50px 5px;
 }
+.sign-in-btn {
+  justify-self: center;
+  background-color: transparent;
+  color: var(--add-new-btn);
+  border: 2px solid var(--add-new-btn);
+  width: 10rem !important;
+  height: 4rem !important;
+  font-size: 1.6rem;
+  font-weight: bold;
+  padding: 1rem 2rem;
+  cursor: pointer;
+  box-shadow: 2px 2px var(--add-new-btn);
+}
+form[name=signin] div,
+form[name=signup] div {
+  margin-bottom: 1rem;;
+}
+
+#signin-link {
+  color: var(--add-new-btn);
+  cursor:pointer;
+  font-weight: 700;
+}
 #menu-illus {
   height: 300px;
   width: 300px;
@@ -136,15 +160,13 @@ p {
 }
 #search {
   grid-area: search;
-  position: absolute;
-  top: 80px;
+  align-self: center;
   justify-self: center;
   display: grid;
   background-color: white;
   width: 70%;
   max-width: 500px;
   height: 40px;
-  margin: 0 auto;
   border: 2px solid var(--main-font);
   transition: 0.1s ease-out;
 }
@@ -162,6 +184,16 @@ p {
 }
 #search:hover input {
   box-shadow: none;
+}
+.signed-in {
+  grid-area: search;
+  position: absolute;
+  right: 5rem;
+  top: 1rem;
+  display:flex;
+}
+#signout {
+  cursor: pointer;
 }
 .end {
   right: 0;
@@ -194,7 +226,7 @@ p {
   border: none;
 }
 .end p {
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   color: var(--main-font);
   margin: 0 1.6rem;
   margin-bottom: 2rem;
@@ -237,6 +269,7 @@ p {
 }
 .section-title {
   color: var(--main-font);
+  font-family: "shadows into light", sans-serif;
   font-size: 2.5rem;
   margin-top: 0;
 }
@@ -272,11 +305,13 @@ p {
   margin-bottom: 2px;
   font-size: 1.4rem;
 }
+.sign-in-btn:hover,
 .bulk-btn:hover,
 .add-new-btn:hover {
   max-width: 115px;
   animation: btn-shake 0.2s infinite;
 }
+.sign-in-btn:active,
 .bulk-btn:active,
 .yes-btn:active,
 .no-btn:active,
@@ -580,6 +615,8 @@ div.pop-up {
   box-shadow: 10px 10px var(--main-font);
   position: relative;
 }
+form[name=signup] input[type="text"],
+form[name=signup] input[type="password"],
 .form-container input[type="text"],
 input[type="number"] {
   box-sizing: border-box;
@@ -589,14 +626,17 @@ input[type="number"] {
   border-radius: 0.3em;
   width: 100%;
 }
+form[name=signup] input[type="text"]:focus,
+form[name=signup] input[type="password"]:focus,
 .form-container input[type="text"]:focus,
 input[type="number"]:focus {
   border: 2px solid #61a7e8;
 }
+form[name=signup] input.invalid,
 .form-container input.invalid {
   border: 2px solid #e54b4b;
 }
-.book-form-title {
+form h3 {
   margin-top: 0;
   font-family: "shadows into light", sans-serif;
   font-size: 2.5rem;
@@ -621,6 +661,7 @@ input[type="number"]:focus {
 .form-container div {
   margin-bottom: 10px;
 }
+.sign-in-btn,
 .no-btn,
 .yes-btn,
 .remove-book-btn,
@@ -837,6 +878,8 @@ div.read-radio-btns {
 #mango-tango {
   background-color: #ff8c42;
 }
+.modal-signup,
+.modal-signin,
 .modal-bulk {
   display: none;
   height: 100%;
@@ -847,10 +890,13 @@ div.read-radio-btns {
   top: 0;
   background-color: rgba(0, 0, 0, 0.4);
 }
+form[name=signin],
+form[name=signup],
 #bulk-update-form {
   margin: auto;
-  height: 53rem;
-  width: 45rem;
+  padding: 3rem;
+  /* height: 53rem;
+  width: 45rem; */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -952,13 +998,4 @@ form[name="bulk-update"] {
   width: 8rem;
   height: 3.5rem;
   align-self: center;
-}
-@media screen and (max-width: 1299px) {
-  #search {
-    position: relative;
-    grid-area: search;
-    justify-self: start;
-    display: grid;
-    place-items: center;
-  }
 }

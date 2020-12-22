@@ -13,6 +13,12 @@
       src="https://kit.fontawesome.com/92c06801db.js"
       crossorigin="anonymous"
     ></script>
+    <script src="https://www.gstatic.com/firebasejs/ui/4.7.1/firebase-ui-auth.js"></script>
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://www.gstatic.com/firebasejs/ui/4.7.1/firebase-ui-auth.css"
+    />
     <title>Library app</title>
   </head>
   <body>
@@ -59,6 +65,9 @@
         <li onclick="displayMenu(`wishlist`)">wishlist</li>
         <li onclick="displayMenu(`finished`)">finished</li>
       </ul>
+      <button class="sign-in-btn drawn-border" onclick="showSignIn()">
+        sign in
+      </button>
       <img
         src="02-scaled.png"
         alt="books flying out of a pot"
@@ -67,6 +76,10 @@
     </nav>
     <div id="search" class="drawn-border">
       <input type="text" name="search" id="search-bar" />
+    </div>
+    <div class="signed-in main-font inactive">
+      <p id="user"></p>
+      <p>&nbsp;| <span id="signout" onclick="signOut()">sign out</span></p>
     </div>
     <div class="content">
       <div class="section" id="section-1" data-name="currently reading">
@@ -566,6 +579,70 @@
           />
         </form>
       </div>
+    </div>
+    <div class="modal-signin">
+      <form name="signin" class="drawn-border">
+        <h3>sign in</h3>
+        <div>
+          <label name="email-signin"> email </label>
+          <input type="text" name="email-signin" />
+        </div>
+        <div>
+          <label name="password-signin"> password </label>
+          <input type="password" name="password-signin" />
+        </div>
+        <input
+          type="button"
+          name="signin"
+          class="sign-in-btn drawn-border"
+          value="sign in"
+        />
+        <p>
+          don't have an account?
+          <br />
+          <span id="signin-link" onclick="showSignUp()"
+            >click here to sign up</span
+          >
+        </p>
+      </form>
+    </div>
+    <div class="modal-signup">
+      <form name="signup" class="drawn-border">
+        <h3>sign up</h3>
+        <div>
+          <label name="email-signup"> email </label>
+          <input
+            type="text"
+            name="email-signup"
+            oninput="this.classList.remove('invalid')"
+            required
+          />
+        </div>
+        <div>
+          <label name="password-signup"> password </label>
+          <input
+            type="password"
+            name="password-signup"
+            oninput="this.classList.remove('invalid')"
+            required
+          />
+        </div>
+        <div>
+          <label name="password-confirm-signup"> confirm your password </label>
+          <input
+            type="password"
+            name="password-confirm-signup"
+            oninput="this.classList.remove('invalid')"
+            required
+          />
+        </div>
+        <input
+          type="button"
+          name="signup"
+          class="sign-in-btn drawn-border"
+          value="sign up"
+        />
+      </form>
     </div>
     <script src="app.js"></script>
     <!-- The core Firebase JS SDK is always required and must be listed first -->

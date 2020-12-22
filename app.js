@@ -671,16 +671,21 @@ function resetModal() {
   activeModal.classList.remove("active-modal");
   const firstModal = document.getElementById("first-modal");
   firstModal.classList.add("active-modal");
-  const invalids = activeModal.querySelectorAll(".invalid");
-  invalids.forEach((field) => field.classList.remove("invalid"));
   modalNumber = 0;
 }
-
+function resetInvalid(popUp) {
+  const invalids = popUp.querySelectorAll(".invalid");
+  invalids.forEach((field) => field.classList.remove("invalid"));
+}
 window.onclick = function (e) {
   if (e.target == modal) {
     return resetModalAndForm(modal, "new-book");
   } else if (e.target == modalBulk) {
     return resetModalAndForm(modalBulk, "bulk-update");
+  } else if (e.target == modalSignIn) {
+    return resetModalAndForm(modalSignIn, "signin");
+  } else if (e.target == modalSignUp) {
+    return resetModalAndForm(modalSignUp, "signup");
   }
 };
 const exitBulk = bulkEditForm.querySelector(".exit");
@@ -695,6 +700,7 @@ exitModal.forEach((btn) =>
 );
 function resetModalAndForm(popUp, formName) {
   popUp.style.display = "none";
+  resetInvalid(popUp);
   if (popUp === modal) resetModal();
   document.forms[formName].reset();
 }
@@ -793,6 +799,113 @@ function displayAll() {
     sections[i].classList.remove("inactive");
   }
   checkBookCtn();
+}
+
+const modalSignIn = document.querySelector(".modal-signin");
+function showSignIn() {
+  modalSignIn.style.display = "grid";
+  signInEmail.focus();
+}
+const signInEmail = modalSignIn.querySelector("input[name=email-signin]");
+const signInPw = modalSignIn.querySelector("input[name=password-signin]");
+const signInBtn = modalSignIn.querySelector("input[type=button]");
+signInBtn.addEventListener("click", onSubmitSignIn);
+signInPw.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") {
+    onSubmitSignIn();
+    signInBtn.style.boxShadow = "none";
+  }
+});
+signInPw.addEventListener("keyup", (e) => {
+  if (e.key === "Enter")
+    setTimeout(function () {
+      signInBtn.style.boxShadow = "2px 2px var(--add-new-btn)";
+    }, 100);
+});
+function onSubmitSignIn() {
+  firebase
+    .auth()
+    .signInWithEmailAndPassword(signInEmail.value, signInPw.value)
+    .then((user) => {
+      displaySignedIn();
+      resetModalAndForm(modalSignIn, "signin");
+    })
+    .catch((error) => {
+      var errorCode = error.code;
+      var errorMessage = error.message;
+    });
+}
+const modalSignUp = document.querySelector(".modal-signup");
+function showSignUp() {
+  modalSignIn.style.display = "none";
+  modalSignUp.style.display = "grid";
+  modalSignUp.querySelector("input[name=email-signup]").focus();
+}
+const signUpForm = modalSignUp.querySelector("form");
+const submitSignUp = modalSignUp.querySelector("input[type=button]");
+submitSignUp.addEventListener("click", onSubmitSignUp);
+function onSubmitSignUp() {
+  const signUpInfo = validateSignUp();
+  if (!signUpInfo[0]) {
+    incompleteFields(signUpForm);
+  } else {
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(signUpInfo[1], signUpInfo[2])
+      .then((user) => {
+        displaySignedIn();
+        resetModalAndForm(modalSignUp, "signup");
+      })
+      .catch((error) => {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // ..
+      });
+  }
+}
+const userEmailText = document.querySelector("#user");
+const signedIn = document.querySelector(".signed-in");
+function displaySignedIn() {
+  signedIn.classList.remove("inactive");
+  var user = firebase.auth().currentUser;
+  if (user) userEmail = user.email;
+  userEmailText.textContent = `hi ${userEmail}`;
+}
+function validateSignUp() {
+  var valid = true;
+  const email = modalSignUp.querySelector("input[name=email-signup]");
+  function validateEmail(email) {
+    var re = /\S+@\S+\.\S+/;
+    return re.test(email);
+  }
+  const pass = modalSignUp.querySelector("input[name=password-signup]");
+  const passConfirm = modalSignUp.querySelector(
+    "input[name=password-confirm-signup]"
+  );
+  function validatePw(pass) {
+    if (passConfirm.value === pass) return true;
+  }
+  if (!validateEmail(email.value)) {
+    email.classList.add("invalid");
+    valid = false;
+  }
+  if (!validatePw(pass.value)) {
+    pass.classList.add("invalid");
+    passConfirm.classList.add("invalid");
+    valid = false;
+  }
+  return [valid, email.value, pass.value];
+}
+function signOut() {
+  firebase
+    .auth()
+    .signOut()
+    .then(function () {
+      signedIn.classList.add("inactive");
+    })
+    .catch(function (error) {
+      // An error happened.
+    });
 }
 
 let shiftInt;
