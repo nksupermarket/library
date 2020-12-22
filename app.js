@@ -800,8 +800,16 @@ function displayAll() {
   }
   checkBookCtn();
 }
-
+const modalSignUp = document.querySelector(".modal-signup");
 const modalSignIn = document.querySelector(".modal-signin");
+const exitSignUp = modalSignUp.querySelector(".exit");
+exitSignUp.addEventListener("click", function () {
+  resetModalAndForm(modalSignUp, "signup");
+});
+const exitSignIn = modalSignIn.querySelector(".exit");
+exitSignUp.addEventListener("click", function () {
+  resetModalAndForm(modalSignIn, "signup");
+});
 function showSignIn() {
   modalSignIn.style.display = "grid";
   signInEmail.focus();
@@ -823,19 +831,40 @@ signInPw.addEventListener("keyup", (e) => {
     }, 100);
 });
 function onSubmitSignIn() {
+  displaySigningIn(signInBtn, "signing in");
   firebase
     .auth()
     .signInWithEmailAndPassword(signInEmail.value, signInPw.value)
     .then((user) => {
       displaySignedIn();
       resetModalAndForm(modalSignIn, "signin");
+      displaySigningIn(signInBtn, "finished");
     })
     .catch((error) => {
       var errorCode = error.code;
       var errorMessage = error.message;
+      if (errorCode) {
+        displaySigningIn(signInBtn, "finished");
+        const signInForm = modalSignIn.querySelector("form");
+        incompleteFields(signInForm);
+        signInEmail.classList.add("invalid");
+        signInPw.classList.add("invalid");
+      }
     });
 }
-const modalSignUp = document.querySelector(".modal-signup");
+function resetPw() {
+  var auth = firebase.auth();
+  var emailAddress = signInEmail.value;
+
+  auth
+    .sendPasswordResetEmail(emailAddress)
+    .then(function () {
+      // Email sent.
+    })
+    .catch(function (error) {
+      // An error happened.
+    });
+}
 function showSignUp() {
   modalSignIn.style.display = "none";
   modalSignUp.style.display = "grid";
@@ -849,18 +878,24 @@ function onSubmitSignUp() {
   if (!signUpInfo[0]) {
     incompleteFields(signUpForm);
   } else {
+    displaySigningIn(submitSignUp, "signing in");
     firebase
       .auth()
       .createUserWithEmailAndPassword(signUpInfo[1], signUpInfo[2])
       .then((user) => {
         displaySignedIn();
         resetModalAndForm(modalSignUp, "signup");
-      })
-      .catch((error) => {
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        // ..
+        displaySigningIn(submitSignUp, "finished");
       });
+  }
+}
+function displaySigningIn(btn, state) {
+  if (state === "signing in") {
+    btn.value = "signing in...";
+    btn.classList.add("signing-in");
+  } else {
+    btn.value = "sign in";
+    btn.classList.remove("signing-in");
   }
 }
 const userEmailText = document.querySelector("#user");
@@ -883,7 +918,7 @@ function validateSignUp() {
     "input[name=password-confirm-signup]"
   );
   function validatePw(pass) {
-    if (passConfirm.value === pass) return true;
+    if (passConfirm.value === pass && pass.length >= 6) return true;
   }
   if (!validateEmail(email.value)) {
     email.classList.add("invalid");

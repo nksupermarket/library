@@ -582,22 +582,34 @@
     </div>
     <div class="modal-signin">
       <form name="signin" class="drawn-border">
+        <div class="exit drawn-border">X</div>
+
         <h3>sign in</h3>
         <div>
           <label name="email-signin"> email </label>
-          <input type="text" name="email-signin" />
+          <input
+            type="text"
+            name="email-signin"
+            oninput="this.classList.remove('invalid')"
+          />
         </div>
         <div>
           <label name="password-signin"> password </label>
-          <input type="password" name="password-signin" />
+          <input
+            type="password"
+            name="password-signin"
+            maxlength="20"
+            oninput="this.classList.remove('invalid')"
+          />
         </div>
+        <p id="forgot-password" onclick="resetPw()">forgot password?</p>
         <input
           type="button"
           name="signin"
           class="sign-in-btn drawn-border"
           value="sign in"
         />
-        <p>
+        <p id="new-account-text">
           don't have an account?
           <br />
           <span id="signin-link" onclick="showSignUp()"
@@ -608,6 +620,7 @@
     </div>
     <div class="modal-signup">
       <form name="signup" class="drawn-border">
+        <div class="exit drawn-border">X</div>
         <h3>sign up</h3>
         <div>
           <label name="email-signup"> email </label>
@@ -619,11 +632,14 @@
           />
         </div>
         <div>
-          <label name="password-signup"> password </label>
+          <label name="password-signup">
+            password (mininum 6 characters)
+          </label>
           <input
             type="password"
             name="password-signup"
             oninput="this.classList.remove('invalid')"
+            maxlength="20"
             required
           />
         </div>
@@ -633,6 +649,7 @@
             type="password"
             name="password-confirm-signup"
             oninput="this.classList.remove('invalid')"
+            maxlength="20"
             required
           />
         </div>
