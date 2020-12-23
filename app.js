@@ -884,8 +884,10 @@ function signInGoogle() {
         var token = result.credential.accessToken;
         // ...
       }
-      // The signed-in user info.
       var user = result.user;
+      console.log(user);
+      displaySignedIn();
+      displayMessage("you're in!", "success");
     })
     .catch(function (error) {
       // Handle Errors here.
@@ -895,6 +897,8 @@ function signInGoogle() {
       var email = error.email;
       // The firebase.auth.AuthCredential type that was used.
       var credential = error.credential;
+
+      console.log(errorCode);
       // ...
     });
 }
