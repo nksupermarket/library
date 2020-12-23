@@ -800,6 +800,7 @@ function displayAll() {
   }
   checkBookCtn();
 }
+
 const modalSignUp = document.querySelector(".modal-signup");
 const modalSignIn = document.querySelector(".modal-signin");
 const exitSignUp = modalSignUp.querySelector(".exit");
@@ -836,6 +837,7 @@ function onSubmitSignIn() {
     .auth()
     .signInWithEmailAndPassword(signInEmail.value, signInPw.value)
     .then((user) => {
+      displayMessage("you're in!", "success");
       displaySignedIn();
       resetModalAndForm(modalSignIn, "signin");
       displaySigningIn(signInBtn, "finished");
@@ -844,25 +846,56 @@ function onSubmitSignIn() {
       var errorCode = error.code;
       var errorMessage = error.message;
       if (errorCode) {
+        console.log(errorCode);
         displaySigningIn(signInBtn, "finished");
         const signInForm = modalSignIn.querySelector("form");
         incompleteFields(signInForm);
         signInEmail.classList.add("invalid");
         signInPw.classList.add("invalid");
       }
+      if (errorCode.includes("email")) {
+        displayMessage("couldn't find that email boss", "error");
+      } else if (errorCode.includes("password")) {
+        displayMessage("that's not the right password", "error");
+      }
     });
 }
 function resetPw() {
   var auth = firebase.auth();
   var emailAddress = signInEmail.value;
-
+  if (!validateEmail(emailAddress))
+    return displayMessage("did you type your email in right?", "error");
   auth
     .sendPasswordResetEmail(emailAddress)
     .then(function () {
-      // Email sent.
+      displayMessage("reset password email sent", "success");
+    })
+    .catch(function (error) {});
+}
+function signInGoogle() {
+  var provider = new firebase.auth.GoogleAuthProvider();
+  firebase.auth().signInWithRedirect(provider);
+  firebase
+    .auth()
+    .getRedirectResult()
+    .then(function (result) {
+      if (result.credential) {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        var token = result.credential.accessToken;
+        // ...
+      }
+      // The signed-in user info.
+      var user = result.user;
     })
     .catch(function (error) {
-      // An error happened.
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      // The email of the user's account used.
+      var email = error.email;
+      // The firebase.auth.AuthCredential type that was used.
+      var credential = error.credential;
+      // ...
     });
 }
 function showSignUp() {
@@ -883,6 +916,7 @@ function onSubmitSignUp() {
       .auth()
       .createUserWithEmailAndPassword(signUpInfo[1], signUpInfo[2])
       .then((user) => {
+        displayMessage("you're in!", "success");
         displaySignedIn();
         resetModalAndForm(modalSignUp, "signup");
         displaySigningIn(submitSignUp, "finished");
@@ -906,22 +940,34 @@ function displaySignedIn() {
   if (user) userEmail = user.email;
   userEmailText.textContent = `hi ${userEmail}`;
 }
+function validateEmail(email) {
+  var re = /\S+@\S+\.\S+/;
+  return re.test(email);
+}
 function validateSignUp() {
   var valid = true;
+
   const email = modalSignUp.querySelector("input[name=email-signup]");
-  function validateEmail(email) {
-    var re = /\S+@\S+\.\S+/;
-    return re.test(email);
-  }
+
   const pass = modalSignUp.querySelector("input[name=password-signup]");
   const passConfirm = modalSignUp.querySelector(
     "input[name=password-confirm-signup]"
   );
   function validatePw(pass) {
-    if (passConfirm.value === pass && pass.length >= 6) return true;
+    let validPw = true;
+    if (passConfirm.value != pass) {
+      displayMessage("passwords do not match up", "error");
+      validPw = false;
+    }
+    if (pass.length < 6) {
+      displayMessage("password must be at least 6 characters", "error");
+      validPw = false;
+    }
+    return validPw;
   }
   if (!validateEmail(email.value)) {
     email.classList.add("invalid");
+    displayMessage("did you type your email in right?", "error");
     valid = false;
   }
   if (!validatePw(pass.value)) {
@@ -937,10 +983,23 @@ function signOut() {
     .signOut()
     .then(function () {
       signedIn.classList.add("inactive");
+      displayMessage("you are signed out", "success");
     })
     .catch(function (error) {
       // An error happened.
     });
+}
+
+function displayMessage(str, type) {
+  const messageCtn = document.querySelector("#message");
+  messageCtn.textContent = str;
+  messageCtn.classList.remove("inactive");
+  type === "error"
+    ? messageCtn.classList.add("error")
+    : messageCtn.classList.add("success");
+  return setTimeout(() => {
+    messageCtn.classList.add("inactive");
+  }, 1500);
 }
 
 let shiftInt;

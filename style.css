@@ -75,6 +75,37 @@ p {
   top: -10px;
   z-index: -1;
 }
+#message {
+  padding: 1rem 2rem;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 15rem;
+  z-index: 2;
+  background-color: white;
+  font-size: 1.6rem;
+  font-weight: bold;
+}
+#message.error {
+  color: var(--add-new-btn);
+  border: 2px solid var(--add-new-btn);
+  box-shadow: 2px 2px var(--add-new-btn);
+}
+#message.error:before {
+  font-family: "Font Awesome 5 Free";
+  content:"\f00d";
+  margin-right: 1rem;
+}
+#message.success {
+  color: var(--section-font);
+  border: 2px solid var(--section-font);
+  box-shadow: 2px 2px var(--section-font);
+}
+#message.success:before {
+  font-family: "Font Awesome 5 Free";
+  content:"\f00c";
+  margin-right: 1rem;
+}
 .menu {
   grid-area: menu;
   width: 300px;
@@ -147,11 +178,12 @@ p {
   cursor: default;
   width:13rem !important;
 }
-form[name=signin] div,
+form[name=signin] div:nth-of-type(2),
 form[name=signup] div {
   margin-bottom: 1.5rem;;
 }
 #forgot-password {
+  font-size: 1.4rem;
   align-self: start;
   margin-top: 0;
   cursor: pointer;
@@ -165,6 +197,24 @@ form[name=signup] div {
   color: var(--add-new-btn);
   cursor:pointer;
   font-weight: 700;
+}
+#or-divider {
+     width: 100%; 
+   text-align: center; 
+   border-bottom: 1px solid var(--main-font); 
+   line-height: 0.1em;
+   margin: 3.8rem 0;
+}
+#or-divider span {
+  background:var(--background);
+  padding: 0 1rem;
+}
+#google-signin {
+  margin-bottom: 1rem;
+  cursor: pointer;
+}
+#google-signin:active {
+  filter: brightness(0.8);
 }
 #menu-illus {
   height: 300px;
