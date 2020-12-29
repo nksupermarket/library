@@ -1,22 +1,53 @@
-let myLibrary = [];
-
 window.onload = function () {
+  googleOnRedirect();
+  lsTest();
+  userTest();
   searchBar.value = "";
-  if (localStorage.getItem("library")) myLibrary = displayLibrary();
-  if (localStorage.getItem("sample counter"))
-    sampleCounter.value = localStorage.getItem("sample counter");
-  if (!document.querySelector(".sample-book"))
-    displaySampleBook(sampleCounter.value);
-  checkBookCtn();
+  refreshDisplay();
 };
-function displayLibrary() {
-  let libraryInStorage = JSON.parse(localStorage.getItem("library"));
-  if (libraryInStorage) {
-    for (let i = 0; i < libraryInStorage.length; i++) {
-      displayBook(libraryInStorage[i]);
-    }
+
+let myLibrary = [];
+let loggedIn;
+let local = true;
+
+function lsTest() {
+  var test = "test";
+  try {
+    localStorage.setItem("test", test);
+    localStorage.removeItem(test);
+    return (local = true);
+  } catch (e) {
+    return (local = false);
   }
-  return libraryInStorage;
+}
+function userTest() {
+  if (firebase.auth().currentUser) loggedIn = true;
+}
+
+function setLibrary() {
+  if (loggedIn) {
+    upToFb("library", myLibrary);
+  } else if (local) {
+    localStorage.setItem("library", JSON.stringify(myLibrary));
+  }
+}
+function getLibrary() {
+  if (loggedIn) {
+    myLibrary = dlFromFb("library", myLibrary);
+  } else if (local) {
+    myLibrary = JSON.parse(localStorage.getItem("library"));
+  }
+
+  if (!myLibrary) myLibrary = [];
+}
+function displayLibrary() {
+  (function removeCurrentLib() {
+    document
+      .querySelectorAll(".book-wrapper")
+      .forEach((book) => book.parentNode.removeChild(book));
+  })();
+
+  myLibrary.forEach((book) => displayBook(book));
 }
 
 function Book(title, author, pages, status, cover, accent, id) {
@@ -71,7 +102,7 @@ function addBookToLibrary() {
   let id;
   if (myLibrary.length === 0) {
     id = 0;
-  } else if (myLibrary[myLibrary.length - 1].id.includes("sample-book")) {
+  } else if (typeof myLibrary[myLibrary.length - 1].id != "number") {
     const revLibrary = myLibrary.slice().reverse();
     const lastRealBook = revLibrary.find((book) => {
       if (typeof book.id == "number") return book;
@@ -92,7 +123,7 @@ function addBookToLibrary() {
   );
 
   myLibrary.push(newBook);
-  localStorage.setItem("library", JSON.stringify(myLibrary));
+  setLibrary();
   return newBook;
 }
 
@@ -272,7 +303,7 @@ function displayBook(a) {
         e.target.name.includes("accent")
           ? (myLibrary[whereIsBook(a.id)].accent = e.target.value)
           : (myLibrary[whereIsBook(a.id)].cover = e.target.value);
-        localStorage.setItem("library", JSON.stringify(myLibrary));
+        setLibrary();
       })
     );
   })();
@@ -318,7 +349,7 @@ function displayBook(a) {
           case "book-display-pages-num":
             myLibrary[whereIsBook(bookWrapper.id)].pages = p.textContent;
         }
-        localStorage.setItem("library", JSON.stringify(myLibrary));
+        setLibrary();
       })
     );
   }
@@ -361,7 +392,7 @@ const noBtn = removeBookPopUp.querySelector(".no-btn");
 
 yesBtn.addEventListener("click", () => {
   myLibrary.splice(whereIsBook(currentBook), 1);
-  localStorage.setItem("library", JSON.stringify(myLibrary));
+  setLibrary();
   document.getElementById(currentBook).remove();
   removeBookPopUp.classList.add("inactive");
   checkBookCtn();
@@ -416,7 +447,7 @@ function onDrop(event) {
   myLibrary[whereIsBook(obj.id)].status = dropzone.dataset.status;
   myLibrary.push(myLibrary[whereIsBook(obj.id)]);
   myLibrary.splice(whereIsBook(obj.id), 1);
-  localStorage.setItem("library", JSON.stringify(myLibrary));
+  setLibrary();
 
   checkBookCtn();
 }
@@ -451,10 +482,25 @@ const sampleCounter = document.getElementsByName("sample-book-counter")[0];
 sampleCounter.addEventListener("input", () => {
   removeSampleBook();
   displaySampleBook(sampleCounter.value);
-  localStorage.setItem("sample counter", sampleCounter.value);
-  localStorage.setItem("library", JSON.stringify(myLibrary));
+  setSampleCounter();
+  setLibrary();
   checkBookCtn();
 });
+function setSampleCounter() {
+  if (loggedIn) {
+    upToFb("sample counter", sampleCounter.value);
+  } else if (local) {
+    localStorage.setItem("sample counter", sampleCounter.value);
+  }
+}
+function getSampleCounter() {
+  var counterValue;
+  if (loggedIn) {
+    dlFromFb("sample counter", sampleCounter.value);
+  } else if (local) {
+    sampleCounter.value = localStorage.getItem("sample counter");
+  }
+}
 function removeSampleBook() {
   const sampleBooks = document.querySelectorAll(".sample-book");
   for (let i = 0; i < sampleBooks.length; i++) sampleBooks[i].remove();
@@ -611,7 +657,7 @@ function bulkUpdate() {
   resetModalAndForm(modalBulk, "bulk-update");
 
   checkBookCtn();
-  localStorage.setItem("library", JSON.stringify(myLibrary));
+  setLibrary();
 }
 
 const modalSequence = newBookForm.querySelectorAll(".modal-sequence");
@@ -808,8 +854,8 @@ exitSignUp.addEventListener("click", function () {
   resetModalAndForm(modalSignUp, "signup");
 });
 const exitSignIn = modalSignIn.querySelector(".exit");
-exitSignUp.addEventListener("click", function () {
-  resetModalAndForm(modalSignIn, "signup");
+exitSignIn.addEventListener("click", function () {
+  resetModalAndForm(modalSignIn, "signin");
 });
 function showSignIn() {
   modalSignIn.style.display = "grid";
@@ -841,6 +887,8 @@ function onSubmitSignIn() {
       displaySignedIn();
       resetModalAndForm(modalSignIn, "signin");
       displaySigningIn(signInBtn, "finished");
+      loggedIn = true;
+      refreshDisplay();
     })
     .catch((error) => {
       var errorCode = error.code;
@@ -875,6 +923,8 @@ function resetPw() {
 function signInGoogle() {
   var provider = new firebase.auth.GoogleAuthProvider();
   firebase.auth().signInWithRedirect(provider);
+}
+function googleOnRedirect() {
   firebase
     .auth()
     .getRedirectResult()
@@ -885,9 +935,11 @@ function signInGoogle() {
         // ...
       }
       var user = result.user;
-      console.log(user);
+
       displaySignedIn();
       displayMessage("you're in!", "success");
+      loggedIn = true;
+      refreshDisplay();
     })
     .catch(function (error) {
       // Handle Errors here.
@@ -898,10 +950,20 @@ function signInGoogle() {
       // The firebase.auth.AuthCredential type that was used.
       var credential = error.credential;
 
+      displayMessage(`${error}`, "error");
+
       console.log(errorCode);
       // ...
     });
 }
+function refreshDisplay() {
+  getLibrary();
+  sampleCounter.value = getSampleCounter();
+  displaySampleBook(sampleCounter.value);
+  displayLibrary();
+  checkBookCtn();
+}
+
 function showSignUp() {
   modalSignIn.style.display = "none";
   modalSignUp.style.display = "grid";
@@ -988,9 +1050,63 @@ function signOut() {
     .then(function () {
       signedIn.classList.add("inactive");
       displayMessage("you are signed out", "success");
+      loggedIn = false;
+      refreshDisplay();
     })
     .catch(function (error) {
       // An error happened.
+    });
+}
+
+function upToFb(name, item) {
+  var user = firebase.auth().currentUser;
+
+  var storageRef = firebase.storage().ref();
+  var itemRef = storageRef.child(`${user.email}/${name}`);
+
+  itemRef.putString(JSON.stringify(item)).then(function (snapshot) {
+    console.log(`uploaded to ${itemRef}`);
+  });
+}
+function dlFromFb(name, item) {
+  var user = firebase.auth().currentUser;
+
+  var storageRef = firebase.storage().ref();
+  var itemRef = storageRef.child(`${user.email}/${name}`);
+
+  var itemDl;
+
+  itemRef
+    .getDownloadURL()
+    .then(function (url) {
+      var xhr = new XMLHttpRequest();
+      switch (name) {
+        case "library":
+          xhr.responseType = "json";
+          break;
+        case "sample counter":
+          xhr.responseType = "text";
+      }
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+          item = xhr.response;
+          if (!item) {
+            switch (name) {
+              case "library":
+                myLibrary = [];
+                break;
+              case "sample counter":
+                sampleCounter.value = 4;
+            }
+          }
+        }
+      };
+
+      xhr.open("GET", url, true);
+      xhr.send();
+    })
+    .catch(function (error) {
+      console.log(error);
     });
 }
 
