@@ -1,9 +1,12 @@
 window.onload = function () {
-  googleOnRedirect();
   lsTest();
-  userTest();
-  searchBar.value = "";
   refreshDisplay();
+  if (sessionStorage.getItem("google pending")) {
+    signInAnimate("start");
+    googleOnRedirect();
+    sessionStorage.removeItem("google pending");
+  }
+  searchBar.value = "";
 };
 
 let myLibrary = [];
@@ -20,33 +23,33 @@ function lsTest() {
     return (local = false);
   }
 }
-function userTest() {
-  if (firebase.auth().currentUser) loggedIn = true;
-}
 
-function setLibrary() {
-  if (loggedIn) {
-    upToFb("library", myLibrary);
-  } else if (local) {
-    localStorage.setItem("library", JSON.stringify(myLibrary));
-  }
+function set(name, item) {
+  loggedIn
+    ? upToFb(name, item)
+    : local
+    ? localStorage.setItem(name, JSON.stringify(item))
+    : null;
 }
-function getLibrary() {
-  if (loggedIn) {
-    myLibrary = dlFromFb("library", myLibrary);
-  } else if (local) {
-    myLibrary = JSON.parse(localStorage.getItem("library"));
-  }
+function get(name, item) {
+  loggedIn
+    ? (item = dlFromFb(name, item))
+    : local
+    ? (item = JSON.parse(localStorage.getItem(name)))
+    : (item = null);
 
-  if (!myLibrary) myLibrary = [];
+  if (!item) {
+    name === "library" ? (item = []) : (item = 4);
+  }
+  console.log(item);
+  return item;
+}
+function removeCurrentLib() {
+  document
+    .querySelectorAll(".book-wrapper")
+    .forEach((book) => book.parentNode.removeChild(book));
 }
 function displayLibrary() {
-  (function removeCurrentLib() {
-    document
-      .querySelectorAll(".book-wrapper")
-      .forEach((book) => book.parentNode.removeChild(book));
-  })();
-
   myLibrary.forEach((book) => displayBook(book));
 }
 
@@ -123,7 +126,7 @@ function addBookToLibrary() {
   );
 
   myLibrary.push(newBook);
-  setLibrary();
+  set("library", myLibrary);
   return newBook;
 }
 
@@ -303,7 +306,7 @@ function displayBook(a) {
         e.target.name.includes("accent")
           ? (myLibrary[whereIsBook(a.id)].accent = e.target.value)
           : (myLibrary[whereIsBook(a.id)].cover = e.target.value);
-        setLibrary();
+        set("library", myLibrary);
       })
     );
   })();
@@ -349,7 +352,7 @@ function displayBook(a) {
           case "book-display-pages-num":
             myLibrary[whereIsBook(bookWrapper.id)].pages = p.textContent;
         }
-        setLibrary();
+        set("library", myLibrary);
       })
     );
   }
@@ -392,7 +395,7 @@ const noBtn = removeBookPopUp.querySelector(".no-btn");
 
 yesBtn.addEventListener("click", () => {
   myLibrary.splice(whereIsBook(currentBook), 1);
-  setLibrary();
+  set("library", myLibrary);
   document.getElementById(currentBook).remove();
   removeBookPopUp.classList.add("inactive");
   checkBookCtn();
@@ -447,7 +450,7 @@ function onDrop(event) {
   myLibrary[whereIsBook(obj.id)].status = dropzone.dataset.status;
   myLibrary.push(myLibrary[whereIsBook(obj.id)]);
   myLibrary.splice(whereIsBook(obj.id), 1);
-  setLibrary();
+  set("library", myLibrary);
 
   checkBookCtn();
 }
@@ -482,25 +485,11 @@ const sampleCounter = document.getElementsByName("sample-book-counter")[0];
 sampleCounter.addEventListener("input", () => {
   removeSampleBook();
   displaySampleBook(sampleCounter.value);
-  setSampleCounter();
-  setLibrary();
+  set("sample counter", sampleCounter.value);
+  set("library", myLibrary);
   checkBookCtn();
 });
-function setSampleCounter() {
-  if (loggedIn) {
-    upToFb("sample counter", sampleCounter.value);
-  } else if (local) {
-    localStorage.setItem("sample counter", sampleCounter.value);
-  }
-}
-function getSampleCounter() {
-  var counterValue;
-  if (loggedIn) {
-    dlFromFb("sample counter", sampleCounter.value);
-  } else if (local) {
-    sampleCounter.value = localStorage.getItem("sample counter");
-  }
-}
+
 function removeSampleBook() {
   const sampleBooks = document.querySelectorAll(".sample-book");
   for (let i = 0; i < sampleBooks.length; i++) sampleBooks[i].remove();
@@ -606,16 +595,6 @@ function bulkUpdate() {
       );
       bookDisplayPages.innerHTML = `<span>${bookPages}</span>`;
     }
-    if (bookStatus) {
-      const newSection = document.querySelector(
-        `.book-ctn[data-status="${bookStatus}"]`
-      );
-      newSection.prepend(bookWrapper);
-      bookWrapper.dataset.status = bookStatus;
-      myLibrary[book].status = bookStatus;
-      myLibrary.push(myLibrary[book]);
-      myLibrary.splice(book, 1);
-    }
     if (bookCover) {
       const secondPage = bookWrapper.querySelector(".second-page");
       const bookDisplay = bookWrapper.querySelector(".book-display");
@@ -652,12 +631,22 @@ function bulkUpdate() {
       }
       myLibrary[book].accent = bookAccent;
     }
+    if (bookStatus) {
+      const newSection = document.querySelector(
+        `.book-ctn[data-status="${bookStatus}"]`
+      );
+      newSection.prepend(bookWrapper);
+      bookWrapper.dataset.status = bookStatus;
+      myLibrary[book].status = bookStatus;
+      myLibrary.push(myLibrary[book]);
+      myLibrary.splice(book, 1);
+    }
   }
   modalBulk.style.display = "none";
   resetModalAndForm(modalBulk, "bulk-update");
 
   checkBookCtn();
-  setLibrary();
+  set("library", myLibrary);
 }
 
 const modalSequence = newBookForm.querySelectorAll(".modal-sequence");
@@ -889,6 +878,8 @@ function onSubmitSignIn() {
       displaySigningIn(signInBtn, "finished");
       loggedIn = true;
       refreshDisplay();
+      set("library", myLibrary);
+      set("sample counter", sampleCounter.value);
     })
     .catch((error) => {
       var errorCode = error.code;
@@ -922,6 +913,7 @@ function resetPw() {
 }
 function signInGoogle() {
   var provider = new firebase.auth.GoogleAuthProvider();
+  sessionStorage.setItem("google pending", "pending");
   firebase.auth().signInWithRedirect(provider);
 }
 function googleOnRedirect() {
@@ -936,10 +928,13 @@ function googleOnRedirect() {
       }
       var user = result.user;
 
+      signInAnimate("end");
       displaySignedIn();
       displayMessage("you're in!", "success");
       loggedIn = true;
       refreshDisplay();
+      set("library", myLibrary);
+      set("sample counter", sampleCounter.value);
     })
     .catch(function (error) {
       // Handle Errors here.
@@ -952,15 +947,17 @@ function googleOnRedirect() {
 
       displayMessage(`${error}`, "error");
 
-      console.log(errorCode);
+      console.log(error);
       // ...
     });
 }
 function refreshDisplay() {
-  getLibrary();
-  sampleCounter.value = getSampleCounter();
-  displaySampleBook(sampleCounter.value);
-  displayLibrary();
+  myLibrary = get("library", myLibrary);
+  sampleCounter.value = get("sample counter", sampleCounter.value);
+  removeCurrentLib();
+  myLibrary.length === 0
+    ? displaySampleBook(sampleCounter.value)
+    : displayLibrary();
   checkBookCtn();
 }
 
@@ -996,6 +993,26 @@ function displaySigningIn(btn, state) {
   } else {
     btn.value = "sign in";
     btn.classList.remove("signing-in");
+  }
+}
+function signInAnimate(state) {
+  const text = document.querySelector("#signing-in-display");
+  switch (state) {
+    case "start":
+      text.classList.remove("inactive");
+      const dotDotDot = text.querySelectorAll(".fade-animate");
+      let i = 0;
+      const startAnimate = setInterval(function () {
+        if (i === 3) {
+          i = -1;
+          dotDotDot.forEach((dot) => dot.classList.add("inactive"));
+        }
+        if (i >= 0) dotDotDot[i].classList.remove("inactive");
+        i++;
+      }, 500);
+      break;
+    case "end":
+      text.classList.add("inactive");
   }
 }
 const userEmailText = document.querySelector("#user");
@@ -1065,7 +1082,7 @@ function upToFb(name, item) {
   var itemRef = storageRef.child(`${user.email}/${name}`);
 
   itemRef.putString(JSON.stringify(item)).then(function (snapshot) {
-    console.log(`uploaded to ${itemRef}`);
+    console.log(item);
   });
 }
 function dlFromFb(name, item) {
@@ -1074,31 +1091,15 @@ function dlFromFb(name, item) {
   var storageRef = firebase.storage().ref();
   var itemRef = storageRef.child(`${user.email}/${name}`);
 
-  var itemDl;
-
   itemRef
     .getDownloadURL()
     .then(function (url) {
       var xhr = new XMLHttpRequest();
-      switch (name) {
-        case "library":
-          xhr.responseType = "json";
-          break;
-        case "sample counter":
-          xhr.responseType = "text";
-      }
+
       xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
           item = xhr.response;
-          if (!item) {
-            switch (name) {
-              case "library":
-                myLibrary = [];
-                break;
-              case "sample counter":
-                sampleCounter.value = 4;
-            }
-          }
+          return item;
         }
       };
 
@@ -1106,7 +1107,7 @@ function dlFromFb(name, item) {
       xhr.send();
     })
     .catch(function (error) {
-      console.log(error);
+      return null;
     });
 }
 
@@ -1114,9 +1115,13 @@ function displayMessage(str, type) {
   const messageCtn = document.querySelector("#message");
   messageCtn.textContent = str;
   messageCtn.classList.remove("inactive");
-  type === "error"
-    ? messageCtn.classList.add("error")
-    : messageCtn.classList.add("success");
+  if (type === "error") {
+    messageCtn.classList.remove("success");
+    messageCtn.classList.add("error");
+  } else {
+    messageCtn.classList.remove("error");
+    messageCtn.classList.add("success");
+  }
   return setTimeout(() => {
     messageCtn.classList.add("inactive");
   }, 1500);
