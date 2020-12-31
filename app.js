@@ -31,9 +31,11 @@ function set(name, item) {
     ? localStorage.setItem(name, JSON.stringify(item))
     : null;
 }
-function get(name, item) {
+function get(name) {
+  var item;
+
   loggedIn
-    ? (item = dlFromFb(name, item))
+    ? (item = dlFromFb(name))
     : local
     ? (item = JSON.parse(localStorage.getItem(name)))
     : (item = null);
@@ -41,8 +43,46 @@ function get(name, item) {
   if (!item) {
     name === "library" ? (item = []) : (item = 4);
   }
-  console.log(item);
   return item;
+}
+
+function refreshDisplay() {
+  if (loggedIn) {
+    return new Promise((resolve, reject) => {
+      pullItems()
+        .then(() => {
+          resolve(afterPullItems());
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      function pullItems() {
+        return new Promise((resolve) => {
+          get("library")
+            .then((library) => {
+              myLibrary = library;
+            })
+            .then(() => {
+              get("sample counter").then((counter) => {
+                resolve((sampleCounter.value = counter));
+              });
+            });
+        });
+      }
+    });
+  } else {
+    myLibrary = get("library");
+    sampleCounter.value = get("sample counter");
+    afterPullItems();
+  }
+
+  function afterPullItems() {
+    removeCurrentLib();
+    myLibrary.length === 0
+      ? displaySampleBook(sampleCounter.value)
+      : displayLibrary();
+    checkBookCtn();
+  }
 }
 function removeCurrentLib() {
   document
@@ -872,14 +912,14 @@ function onSubmitSignIn() {
     .auth()
     .signInWithEmailAndPassword(signInEmail.value, signInPw.value)
     .then((user) => {
-      displayMessage("you're in!", "success");
-      displaySignedIn();
       resetModalAndForm(modalSignIn, "signin");
       displaySigningIn(signInBtn, "finished");
       loggedIn = true;
-      refreshDisplay();
-      set("library", myLibrary);
-      set("sample counter", sampleCounter.value);
+      refreshDisplay().then((result) => {
+        console.log(result);
+        displaySignedIn();
+        displayMessage("you're in!", "success");
+      });
     })
     .catch((error) => {
       var errorCode = error.code;
@@ -928,13 +968,12 @@ function googleOnRedirect() {
       }
       var user = result.user;
 
-      signInAnimate("end");
-      displaySignedIn();
-      displayMessage("you're in!", "success");
       loggedIn = true;
-      refreshDisplay();
-      set("library", myLibrary);
-      set("sample counter", sampleCounter.value);
+      refreshDisplay().then((result) => {
+        signInAnimate("end");
+        displaySignedIn();
+        displayMessage("you're in!", "success");
+      });
     })
     .catch(function (error) {
       // Handle Errors here.
@@ -950,15 +989,6 @@ function googleOnRedirect() {
       console.log(error);
       // ...
     });
-}
-function refreshDisplay() {
-  myLibrary = get("library", myLibrary);
-  sampleCounter.value = get("sample counter", sampleCounter.value);
-  removeCurrentLib();
-  myLibrary.length === 0
-    ? displaySampleBook(sampleCounter.value)
-    : displayLibrary();
-  checkBookCtn();
 }
 
 function showSignUp() {
@@ -1081,36 +1111,30 @@ function upToFb(name, item) {
   var storageRef = firebase.storage().ref();
   var itemRef = storageRef.child(`${user.email}/${name}`);
 
-  itemRef.putString(JSON.stringify(item)).then(function (snapshot) {
-    console.log(item);
-  });
+  itemRef.putString(JSON.stringify(item)).then(function (snapshot) {});
 }
-function dlFromFb(name, item) {
+function dlFromFb(name) {
   var user = firebase.auth().currentUser;
 
   var storageRef = firebase.storage().ref();
   var itemRef = storageRef.child(`${user.email}/${name}`);
 
-  itemRef
-    .getDownloadURL()
-    .then(function (url) {
-      var xhr = new XMLHttpRequest();
+  return new Promise((resolve, reject) => {
+    itemRef
+      .getDownloadURL()
+      .then(function (url) {
+        var xhr = new XMLHttpRequest();
+        xhr.responseType = "json";
+        xhr.onload = () => resolve(xhr.response);
 
-      xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-          item = xhr.response;
-          return item;
-        }
-      };
-
-      xhr.open("GET", url, true);
-      xhr.send();
-    })
-    .catch(function (error) {
-      return null;
-    });
+        xhr.open("GET", url);
+        xhr.send();
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  });
 }
-
 function displayMessage(str, type) {
   const messageCtn = document.querySelector("#message");
   messageCtn.textContent = str;
