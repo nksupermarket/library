@@ -944,10 +944,10 @@ function onSubmitSignIn() {
     .auth()
     .signInWithEmailAndPassword(signInEmail.value, signInPw.value)
     .then((user) => {
-      resetModalAndForm(modalSignIn, "signin");
-      displaySigningIn(signInBtn, "finished");
       loggedIn = true;
       refreshDisplay().then((result) => {
+        resetModalAndForm(modalSignIn, "signin");
+        displaySigningIn(signInBtn, "finished");
         displaySignedIn();
         displayMessage("you're in!", "success");
       });
