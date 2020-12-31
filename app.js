@@ -48,7 +48,7 @@ function get(name) {
 
 function refreshDisplay() {
   if (loggedIn) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       pullItems()
         .then(() => {
           resolve(afterPullItems());
@@ -61,12 +61,10 @@ function refreshDisplay() {
         return new Promise((resolve) => {
           get("library")
             .then((library) => {
-              if (!library) library = [];
               myLibrary = library;
             })
             .then(() => {
               get("sample counter").then((counter) => {
-                if (!counter) counter = 4;
                 resolve((sampleCounter.value = counter));
               });
             });
@@ -999,16 +997,12 @@ function googleOnRedirect() {
       }
       var user = result.user;
       if (result.additionalUserInfo.isNewUser) {
-        loggedIn = false;
-        refreshDisplay();
+        loggedIn = true;
         signInAnimate("end");
         displaySignedIn();
         displayMessage("you're in!", "success");
         set("library", myLibrary);
         set("sample counter", sampleCounter.value);
-        setTimeout(() => {
-          loggedIn = true;
-        }, 10);
       } else {
         loggedIn = true;
         refreshDisplay().then((result) => {
@@ -1033,6 +1027,19 @@ function googleOnRedirect() {
       // ...
     });
 }
+(function setPersistence() {
+  firebase
+    .auth()
+    .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+    .then(() => {
+      return firebase.auth().signInWithEmailAndPassword(email, password);
+    })
+    .catch((error) => {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+    });
+})();
 
 function displaySigningIn(btn, state) {
   if (state === "signing in") {
