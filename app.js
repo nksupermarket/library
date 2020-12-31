@@ -56,14 +56,17 @@ function refreshDisplay() {
         .catch((error) => {
           console.log(error);
         });
+
       function pullItems() {
         return new Promise((resolve) => {
           get("library")
             .then((library) => {
+              if (!library) library = [];
               myLibrary = library;
             })
             .then(() => {
               get("sample counter").then((counter) => {
+                if (!counter) counter = 4;
                 resolve((sampleCounter.value = counter));
               });
             });
@@ -886,6 +889,35 @@ const exitSignIn = modalSignIn.querySelector(".exit");
 exitSignIn.addEventListener("click", function () {
   resetModalAndForm(modalSignIn, "signin");
 });
+
+function showSignUp() {
+  modalSignIn.style.display = "none";
+  modalSignUp.style.display = "grid";
+  modalSignUp.querySelector("input[name=email-signup]").focus();
+}
+const signUpForm = modalSignUp.querySelector("form");
+const submitSignUp = modalSignUp.querySelector("input[type=button]");
+submitSignUp.addEventListener("click", onSubmitSignUp);
+function onSubmitSignUp() {
+  const signUpInfo = validateSignUp();
+  if (!signUpInfo[0]) {
+    incompleteFields(signUpForm);
+  } else {
+    displaySigningIn(submitSignUp, "signing in");
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(signUpInfo[1], signUpInfo[2])
+      .then((user) => {
+        displayMessage("you're in!", "success");
+        set("library", myLibrary);
+        set("sample counter", sampleCounter.value);
+        displaySignedIn();
+        resetModalAndForm(modalSignUp, "signup");
+        displaySigningIn(submitSignUp, "finished");
+      });
+  }
+}
+
 function showSignIn() {
   modalSignIn.style.display = "grid";
   signInEmail.focus();
@@ -916,7 +948,6 @@ function onSubmitSignIn() {
       displaySigningIn(signInBtn, "finished");
       loggedIn = true;
       refreshDisplay().then((result) => {
-        console.log(result);
         displaySignedIn();
         displayMessage("you're in!", "success");
       });
@@ -967,13 +998,25 @@ function googleOnRedirect() {
         // ...
       }
       var user = result.user;
-
-      loggedIn = true;
-      refreshDisplay().then((result) => {
+      if (result.additionalUserInfo.isNewUser) {
+        loggedIn = false;
+        refreshDisplay();
         signInAnimate("end");
         displaySignedIn();
         displayMessage("you're in!", "success");
-      });
+        set("library", myLibrary);
+        set("sample counter", sampleCounter.value);
+        setTimeout(() => {
+          loggedIn = true;
+        }, 10);
+      } else {
+        loggedIn = true;
+        refreshDisplay().then((result) => {
+          signInAnimate("end");
+          displaySignedIn();
+          displayMessage("you're in!", "success");
+        });
+      }
     })
     .catch(function (error) {
       // Handle Errors here.
@@ -991,31 +1034,6 @@ function googleOnRedirect() {
     });
 }
 
-function showSignUp() {
-  modalSignIn.style.display = "none";
-  modalSignUp.style.display = "grid";
-  modalSignUp.querySelector("input[name=email-signup]").focus();
-}
-const signUpForm = modalSignUp.querySelector("form");
-const submitSignUp = modalSignUp.querySelector("input[type=button]");
-submitSignUp.addEventListener("click", onSubmitSignUp);
-function onSubmitSignUp() {
-  const signUpInfo = validateSignUp();
-  if (!signUpInfo[0]) {
-    incompleteFields(signUpForm);
-  } else {
-    displaySigningIn(submitSignUp, "signing in");
-    firebase
-      .auth()
-      .createUserWithEmailAndPassword(signUpInfo[1], signUpInfo[2])
-      .then((user) => {
-        displayMessage("you're in!", "success");
-        displaySignedIn();
-        resetModalAndForm(modalSignUp, "signup");
-        displaySigningIn(submitSignUp, "finished");
-      });
-  }
-}
 function displaySigningIn(btn, state) {
   if (state === "signing in") {
     btn.value = "signing in...";
@@ -1131,7 +1149,7 @@ function dlFromFb(name) {
         xhr.send();
       })
       .catch(function (error) {
-        console.log(error);
+        return {};
       });
   });
 }
