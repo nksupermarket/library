@@ -1,10 +1,15 @@
 window.onload = function () {
   lsTest();
-  refreshDisplay();
   if (sessionStorage.getItem("google pending")) {
+    refreshDisplay();
     signInAnimate("start");
     googleOnRedirect();
     sessionStorage.removeItem("google pending");
+  } else {
+    userTest().then(() => {
+      refreshDisplay();
+      if (loggedIn) displaySignedIn();
+    });
   }
   searchBar.value = "";
 };
@@ -22,6 +27,17 @@ function lsTest() {
   } catch (e) {
     return (local = false);
   }
+}
+function userTest() {
+  return new Promise((resolve) => {
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (user) {
+        resolve((loggedIn = true));
+      } else {
+        resolve((loggedIn = false));
+      }
+    });
+  });
 }
 
 function set(name, item) {
@@ -61,11 +77,11 @@ function refreshDisplay() {
         return new Promise((resolve) => {
           get("library")
             .then((library) => {
-              myLibrary = library;
+              resolve((myLibrary = library));
             })
             .then(() => {
               get("sample counter").then((counter) => {
-                resolve((sampleCounter.value = counter));
+                sampleCounter.value = counter;
               });
             });
         });
@@ -79,9 +95,7 @@ function refreshDisplay() {
 
   function afterPullItems() {
     removeCurrentLib();
-    myLibrary.length === 0
-      ? displaySampleBook(sampleCounter.value)
-      : displayLibrary();
+    displayLibrary();
     checkBookCtn();
   }
 }
@@ -1028,17 +1042,7 @@ function googleOnRedirect() {
     });
 }
 (function setPersistence() {
-  firebase
-    .auth()
-    .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-    .then(() => {
-      return firebase.auth().signInWithEmailAndPassword(email, password);
-    })
-    .catch((error) => {
-      // Handle Errors here.
-      var errorCode = error.code;
-      var errorMessage = error.message;
-    });
+  firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 })();
 
 function displaySigningIn(btn, state) {
