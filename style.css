@@ -93,7 +93,7 @@ p {
 }
 #message.error:before {
   font-family: "Font Awesome 5 Free";
-  content:"\f00d";
+  content: "\f00d";
   margin-right: 1rem;
 }
 #message.success {
@@ -103,7 +103,7 @@ p {
 }
 #message.success:before {
   font-family: "Font Awesome 5 Free";
-  content:"\f00c";
+  content: "\f00c";
   margin-right: 1rem;
 }
 .menu {
@@ -174,14 +174,14 @@ p {
   box-shadow: 2px 2px var(--add-new-btn);
 }
 #signing-in-display {
-grid-area: content;
-position: relative;
-display: flex;
-justify-content: center;
-align-items: center;
-flex-direction: column;
-font-family: "shadows into light", sans-serif;
-font-size: 3.5rem;
+  grid-area: content;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-family: "shadows into light", sans-serif;
+  font-size: 3.5rem;
 }
 .fade-animate {
   margin-left: 0.5rem;
@@ -196,9 +196,9 @@ font-size: 3.5rem;
   padding-bottom: 3rem;
 }
 
-form[name=signin] div:nth-of-type(2),
-form[name=signup] div {
-  margin-bottom: 1.5rem;;
+form[name="signin"] div:nth-of-type(2),
+form[name="signup"] div {
+  margin-bottom: 1.5rem;
 }
 #forgot-password {
   font-size: 1.4rem;
@@ -213,18 +213,18 @@ form[name=signup] div {
 }
 #signin-link {
   color: var(--add-new-btn);
-  cursor:pointer;
+  cursor: pointer;
   font-weight: 700;
 }
 #or-divider {
-     width: 100%; 
-   text-align: center; 
-   border-bottom: 1px solid var(--main-font); 
-   line-height: 0.1em;
-   margin: 3.8rem 0;
+  width: 100%;
+  text-align: center;
+  border-bottom: 1px solid var(--main-font);
+  line-height: 0.1em;
+  margin: 3.8rem 0;
 }
 #or-divider span {
-  background:var(--background);
+  background: var(--background);
   padding: 0 1rem;
 }
 #google-signin {
@@ -272,7 +272,7 @@ form[name=signup] div {
   position: absolute;
   right: 5rem;
   top: 1rem;
-  display:flex;
+  display: flex;
 }
 #signout {
   cursor: pointer;
@@ -292,10 +292,10 @@ form[name=signup] div {
   -webkit-appearance: none;
   margin: 0;
 }
-.sample-book-counter input[type=number] {
+.sample-book-counter input[type="number"] {
   display: inline-block;
   width: 2.5rem;
-  height:2rem;
+  height: 2rem;
   padding: 0;
   text-align: center;
   border: none;
@@ -304,7 +304,7 @@ form[name=signup] div {
   border-radius: 0;
   -moz-appearance: textfield;
 }
-.sample-book-counter input[type=number]:focus {
+.sample-book-counter input[type="number"]:focus {
   border: none;
 }
 .end p {
@@ -413,7 +413,7 @@ form[name=signup] div {
   opacity: 1;
 }
 .arrow-ctn.inactive {
-    position: relative;
+  position: relative;
 }
 .arrow {
   align-self: center;
@@ -433,7 +433,6 @@ form[name=signup] div {
   left: 1.7rem;
   transform: rotate(-45deg);
   -webkit-transform: rotate(-45deg);
-  left
 }
 .left {
   grid-area: l-arrow;
@@ -478,9 +477,9 @@ form[name=signup] div {
   left: 0;
 }
 .active-section {
-  grid-template-areas: 
-  "header"
-  "book-ctn";
+  grid-template-areas:
+    "header"
+    "book-ctn";
   grid-template-columns: 1fr;
 }
 .active-section .book-ctn {
@@ -697,10 +696,10 @@ div.pop-up {
   box-shadow: 10px 10px var(--main-font);
   position: relative;
 }
-form[name=signin] input[type="text"],
-form[name=signin] input[type="password"],
-form[name=signup] input[type="text"],
-form[name=signup] input[type="password"],
+form[name="signin"] input[type="text"],
+form[name="signin"] input[type="password"],
+form[name="signup"] input[type="text"],
+form[name="signup"] input[type="password"],
 .form-container input[type="text"],
 input[type="number"] {
   box-sizing: border-box;
@@ -710,16 +709,16 @@ input[type="number"] {
   border-radius: 0.3em;
   width: 100%;
 }
-form[name=signin] input[type="text"]:focus,
-form[name=signin] input[type="password"]:focus,
-form[name=signup] input[type="text"]:focus,
-form[name=signup] input[type="password"]:focus,
+form[name="signin"] input[type="text"]:focus,
+form[name="signin"] input[type="password"]:focus,
+form[name="signup"] input[type="text"]:focus,
+form[name="signup"] input[type="password"]:focus,
 .form-container input[type="text"]:focus,
 input[type="number"]:focus {
   border: 2px solid #61a7e8;
 }
-form[name=signin] input.invalid,
-form[name=signup] input.invalid,
+form[name="signin"] input.invalid,
+form[name="signup"] input.invalid,
 .form-container input.invalid {
   border: 2px solid #e54b4b;
 }
@@ -977,8 +976,8 @@ div.read-radio-btns {
   top: 0;
   background-color: rgba(0, 0, 0, 0.4);
 }
-form[name=signin],
-form[name=signup],
+form[name="signin"],
+form[name="signup"],
 #bulk-update-form {
   margin: auto;
   padding: 3rem 5rem;

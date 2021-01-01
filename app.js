@@ -5,9 +5,17 @@ window.onload = function () {
     googleOnRedirect();
     sessionStorage.removeItem("google pending");
   } else {
+    displaySigningIn("start", "vet");
     userTest().then(() => {
-      refreshDisplay();
-      if (loggedIn) displaySignedIn();
+      if (loggedIn) {
+        refreshDisplay().then(() => {
+          displaySigningIn("end");
+          displaySignedIn();
+        });
+      } else {
+        displaySigningIn("end");
+        refreshDisplay();
+      }
     });
   }
   searchBar.value = "";
@@ -920,11 +928,10 @@ function onSubmitSignUp() {
       .auth()
       .createUserWithEmailAndPassword(signUpInfo[1], signUpInfo[2])
       .then((user) => {
+        loggedIn = true;
         displayMessage("you're in!", "success");
         displaySignedIn();
         displaySigningIn("end");
-      })
-      .then(() => {
         set("library", myLibrary);
         set("sample counter", sampleCounter.value);
       });
@@ -1141,7 +1148,6 @@ function signOut() {
 
 function upToFb(name, item) {
   var user = firebase.auth().currentUser;
-  console.log(user);
   var storageRef = firebase.storage().ref();
   var itemRef = storageRef.child(`${user.email}/${name}`);
 
