@@ -1,10 +1,10 @@
-#Library app
+# Library app
 
 live: https://lookingcoolonavespa.github.io/library/
 
 illustration by
 
-##Features
+## Features
 
 - log in via email + password or google authentication
 - if you're not logged in, books are saved in local storage
@@ -12,7 +12,7 @@ illustration by
 - sample books in case you want to play around
 - easily find what you're looking for with the search bar
 
-##Resources
+## Resources
 
 illustrations: https://absurd.design/
 
