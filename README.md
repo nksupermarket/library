@@ -15,5 +15,7 @@ illustration by
 ##Resources
 
 illustrations: https://absurd.design/
+
 icons: Font Kit Awesome
+
 cloud services: Firebase
