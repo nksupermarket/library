@@ -2,6 +2,8 @@
 
 live: https://lookingcoolonavespa.github.io/library/
 
+illustration by
+
 ##Features
 
 - log in via email + password or google authentication

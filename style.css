@@ -173,29 +173,29 @@ p {
   cursor: pointer;
   box-shadow: 2px 2px var(--add-new-btn);
 }
-.signing-in {
-  opacity: 0.5;
-  cursor: default;
-  width:13rem !important;
-}
 #signing-in-display {
-  grid-area: search;
-position: absolute;
-top: calc(192px - 7.5rem);
-left: 50%;
-transform: translateX(-50%);
-text-align: center;
+grid-area: content;
+position: relative;
+display: flex;
+justify-content: center;
+align-items: center;
+flex-direction: column;
 font-family: "shadows into light", sans-serif;
-font-size: 2.5rem;
+font-size: 3.5rem;
 }
 .fade-animate {
   margin-left: 0.5rem;
-  font-size: 4rem;
+  font-size: 5rem;
   transition: 0.2s ease-out;
 }
 .fade-animate.inactive {
   position: relative;
 }
+.signing-in-img {
+  display: block;
+  padding-bottom: 3rem;
+}
+
 form[name=signin] div:nth-of-type(2),
 form[name=signup] div {
   margin-bottom: 1.5rem;;

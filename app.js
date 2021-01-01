@@ -1,8 +1,7 @@
 window.onload = function () {
   lsTest();
   if (sessionStorage.getItem("google pending")) {
-    refreshDisplay();
-    signInAnimate("start");
+    displaySigningIn("start", "vet");
     googleOnRedirect();
     sessionStorage.removeItem("google pending");
   } else {
@@ -915,17 +914,19 @@ function onSubmitSignUp() {
   if (!signUpInfo[0]) {
     incompleteFields(signUpForm);
   } else {
-    displaySigningIn(submitSignUp, "signing in");
+    resetModalAndForm(modalSignUp, "signup");
+    displaySigningIn("start", "first time");
     firebase
       .auth()
       .createUserWithEmailAndPassword(signUpInfo[1], signUpInfo[2])
       .then((user) => {
         displayMessage("you're in!", "success");
+        displaySignedIn();
+        displaySigningIn("end");
+      })
+      .then(() => {
         set("library", myLibrary);
         set("sample counter", sampleCounter.value);
-        displaySignedIn();
-        resetModalAndForm(modalSignUp, "signup");
-        displaySigningIn(submitSignUp, "finished");
       });
   }
 }
@@ -951,15 +952,15 @@ signInPw.addEventListener("keyup", (e) => {
     }, 100);
 });
 function onSubmitSignIn() {
-  displaySigningIn(signInBtn, "signing in");
   firebase
     .auth()
     .signInWithEmailAndPassword(signInEmail.value, signInPw.value)
     .then((user) => {
+      resetModalAndForm(modalSignIn, "signin");
+      displaySigningIn("start", "vet");
       loggedIn = true;
       refreshDisplay().then((result) => {
-        resetModalAndForm(modalSignIn, "signin");
-        displaySigningIn(signInBtn, "finished");
+        displaySigningIn("end");
         displaySignedIn();
         displayMessage("you're in!", "success");
       });
@@ -969,7 +970,7 @@ function onSubmitSignIn() {
       var errorMessage = error.message;
       if (errorCode) {
         console.log(errorCode);
-        displaySigningIn(signInBtn, "finished");
+        displaySigningIn("end");
         const signInForm = modalSignIn.querySelector("form");
         incompleteFields(signInForm);
         signInEmail.classList.add("invalid");
@@ -1011,8 +1012,9 @@ function googleOnRedirect() {
       }
       var user = result.user;
       if (result.additionalUserInfo.isNewUser) {
+        refreshDisplay();
         loggedIn = true;
-        signInAnimate("end");
+        displaySigningIn("end");
         displaySignedIn();
         displayMessage("you're in!", "success");
         set("library", myLibrary);
@@ -1020,7 +1022,7 @@ function googleOnRedirect() {
       } else {
         loggedIn = true;
         refreshDisplay().then((result) => {
-          signInAnimate("end");
+          displaySigningIn("end");
           displaySignedIn();
           displayMessage("you're in!", "success");
         });
@@ -1035,33 +1037,36 @@ function googleOnRedirect() {
       // The firebase.auth.AuthCredential type that was used.
       var credential = error.credential;
 
-      displayMessage(`${error}`, "error");
-
-      console.log(error);
-      // ...
+      displayMessage(`${errorMessage}`, "error");
     });
 }
-(function setPersistence() {
-  firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-})();
 
-function displaySigningIn(btn, state) {
-  if (state === "signing in") {
-    btn.value = "signing in...";
-    btn.classList.add("signing-in");
-  } else {
-    btn.value = "sign in";
-    btn.classList.remove("signing-in");
-  }
-}
-function signInAnimate(state) {
-  const text = document.querySelector("#signing-in-display");
+function displaySigningIn(state, virgin) {
+  const loading = document.querySelector("#signing-in-display");
+  const content = document.querySelector(".content");
+  const firstSessImg = loading.querySelector("#first-session");
+  const vetUserImg = loading.querySelector("#vet-user");
+  const text = loading.querySelector("#signing-in-text");
+  var startAnimate;
+
   switch (state) {
     case "start":
-      text.classList.remove("inactive");
-      const dotDotDot = text.querySelectorAll(".fade-animate");
+      content.classList.add("inactive");
+      loading.classList.remove("inactive");
+      switch (virgin) {
+        case "first time":
+          text.textContent = "signing in";
+          firstSessImg.classList.remove("inactive");
+          vetUserImg.classList.add("inactive");
+          break;
+        case "vet":
+          text.textContent = "grabbing your books";
+          firstSessImg.classList.add("inactive");
+          vetUserImg.classList.remove("inactive");
+      }
+      const dotDotDot = loading.querySelectorAll(".fade-animate");
       let i = 0;
-      const startAnimate = setInterval(function () {
+      startAnimate = setInterval(function () {
         if (i === 3) {
           i = -1;
           dotDotDot.forEach((dot) => dot.classList.add("inactive"));
@@ -1071,7 +1076,9 @@ function signInAnimate(state) {
       }, 500);
       break;
     case "end":
-      text.classList.add("inactive");
+      content.classList.remove("inactive");
+      loading.classList.add("inactive");
+      clearInterval(startAnimate);
   }
 }
 const userEmailText = document.querySelector("#user");
@@ -1129,18 +1136,16 @@ function signOut() {
       loggedIn = false;
       refreshDisplay();
     })
-    .catch(function (error) {
-      // An error happened.
-    });
+    .catch(function (error) {});
 }
 
 function upToFb(name, item) {
   var user = firebase.auth().currentUser;
-
+  console.log(user);
   var storageRef = firebase.storage().ref();
   var itemRef = storageRef.child(`${user.email}/${name}`);
 
-  itemRef.putString(JSON.stringify(item)).then(function (snapshot) {});
+  itemRef.putString(JSON.stringify(item));
 }
 function dlFromFb(name) {
   var user = firebase.auth().currentUser;
@@ -1148,7 +1153,7 @@ function dlFromFb(name) {
   var storageRef = firebase.storage().ref();
   var itemRef = storageRef.child(`${user.email}/${name}`);
 
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     itemRef
       .getDownloadURL()
       .then(function (url) {
