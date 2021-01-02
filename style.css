@@ -68,7 +68,7 @@ p {
   border-bottom-left-radius: 15px 255px;
 }
 #corner-right-img {
-  height: 250px;
+  height: 245px;
   position: fixed;
   transform: rotate(230deg);
   right: -10px;
@@ -112,7 +112,7 @@ p {
   height: 100vh;
   position: fixed;
   display: grid;
-  grid-template-rows: 200px auto auto 300px;
+  grid-template-rows: 200px auto auto 270px;
 }
 #logo {
   place-self: center;
@@ -236,8 +236,7 @@ form[name="signup"] div {
   filter: brightness(0.8);
 }
 #menu-illus {
-  height: 300px;
-  width: 300px;
+  width: 270px;
   margin-top: 30px;
   margin-left: -17px;
 }
