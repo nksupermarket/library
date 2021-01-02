@@ -1083,8 +1083,8 @@ function displaySigningIn(state, virgin) {
       }, 500);
       break;
     case "end":
-      content.classList.remove("inactive");
       loading.classList.add("inactive");
+      loading.ontransitionend = () => content.classList.remove("inactive");
       clearInterval(startAnimate);
   }
 }

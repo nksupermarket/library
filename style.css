@@ -182,6 +182,7 @@ p {
   flex-direction: column;
   font-family: "shadows into light", sans-serif;
   font-size: 3.5rem;
+  transition: 0.2s ease-out;
 }
 .fade-animate {
   margin-left: 0.5rem;
