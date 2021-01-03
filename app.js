@@ -99,9 +99,8 @@ function refreshDisplay() {
   }
 
   function afterPullItems() {
+    displaySigningIn("end");
     removeCurrentLib();
-    if (loggedIn || sessionStorage.getItem("google pending"))
-      displaySigningIn("end");
     displayLibrary();
     checkBookCtn();
   }
@@ -1081,7 +1080,8 @@ function displaySigningIn(state, virgin) {
       break;
     case "end":
       loading.classList.add("inactive");
-      loading.ontransitionend = () => content.classList.remove("inactive");
+      loading.ontransitionend = () =>
+        setTimeout(() => content.classList.remove("inactive"), 50);
       clearInterval(startAnimate);
   }
 }
