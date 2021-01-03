@@ -9,9 +9,11 @@ window.onload = function () {
     userTest().then(() => {
       if (loggedIn) {
         refreshDisplay().then(() => {
+          displaySigningIn("end");
           displaySignedIn();
         });
       } else {
+        setTimeout(() => displaySigningIn("end"), 1000);
         refreshDisplay();
       }
     });
@@ -99,7 +101,6 @@ function refreshDisplay() {
   }
 
   function afterPullItems() {
-    displaySigningIn("end");
     removeCurrentLib();
     displayLibrary();
     checkBookCtn();
@@ -928,11 +929,16 @@ function onSubmitSignUp() {
       .createUserWithEmailAndPassword(signUpInfo[1], signUpInfo[2])
       .then((user) => {
         loggedIn = true;
+        displaySigningIn("end");
         displayMessage("you're in!", "success");
         displaySignedIn();
         displaySigningIn("end");
         set("library", myLibrary);
         set("sample counter", sampleCounter.value);
+      })
+      .catch((error) => {
+        displayMessage(error, "error");
+        displaySigningIn("end");
       });
   }
 }
@@ -966,6 +972,7 @@ function onSubmitSignIn() {
       displaySigningIn("start", "vet");
       loggedIn = true;
       refreshDisplay().then((result) => {
+        displaySigningIn("end");
         displaySignedIn();
         displayMessage("you're in!", "success");
       });
@@ -1019,6 +1026,7 @@ function googleOnRedirect() {
       if (result.additionalUserInfo.isNewUser) {
         refreshDisplay();
         loggedIn = true;
+        displaySigningIn("end");
         displaySignedIn();
         displayMessage("you're in!", "success");
         set("library", myLibrary);
@@ -1026,6 +1034,7 @@ function googleOnRedirect() {
       } else {
         loggedIn = true;
         refreshDisplay().then((result) => {
+          displaySigningIn("end");
           displaySignedIn();
           displayMessage("you're in!", "success");
         });
@@ -1039,23 +1048,26 @@ function googleOnRedirect() {
       var email = error.email;
       // The firebase.auth.AuthCredential type that was used.
       var credential = error.credential;
-
+      displaySigningIn("end");
       displayMessage(`${errorMessage}`, "error");
     });
 }
 
 function displaySigningIn(state, virgin) {
   const loading = document.querySelector("#signing-in-display");
-  const content = document.querySelector(".content");
+  const contents = document.querySelector(".content");
   const firstSessImg = loading.querySelector("#first-session");
   const vetUserImg = loading.querySelector("#vet-user");
   const text = loading.querySelector("#signing-in-text");
+  const dotDotDot = Array.from(loading.querySelectorAll(".fade-animate"));
+
   var startAnimate;
 
   switch (state) {
     case "start":
-      content.classList.add("inactive");
+      contents.classList.add("inactive");
       loading.classList.remove("inactive");
+
       switch (virgin) {
         case "first time":
           text.textContent = "signing in";
@@ -1066,23 +1078,28 @@ function displaySigningIn(state, virgin) {
           text.textContent = "grabbing your books";
           firstSessImg.classList.add("inactive");
           vetUserImg.classList.remove("inactive");
+          break;
       }
-      const dotDotDot = loading.querySelectorAll(".fade-animate");
-      let i = 0;
-      startAnimate = setInterval(function () {
-        if (i === 3) {
-          i = -1;
-          dotDotDot.forEach((dot) => dot.classList.add("inactive"));
-        }
-        if (i >= 0) dotDotDot[i].classList.remove("inactive");
-        i++;
-      }, 500);
+
+      (function animateDot() {
+        let i = 0;
+        startAnimate = setInterval(function () {
+          if (i === 3) {
+            i = -1;
+            dotDotDot.forEach((dot) => dot.classList.add("inactive"));
+          }
+          if (i >= 0) dotDotDot[i].classList.remove("inactive");
+          i++;
+        }, 500);
+      })();
+
       break;
     case "end":
-      loading.classList.add("inactive");
-      loading.ontransitionend = () =>
-        setTimeout(() => content.classList.remove("inactive"), 50);
       clearInterval(startAnimate);
+      startAnimate = null;
+      loading.classList.add("inactive");
+      setTimeout(() => contents.classList.remove("inactive"), 200);
+      break;
   }
 }
 const userEmailText = document.querySelector("#user");
@@ -1140,7 +1157,9 @@ function signOut() {
       loggedIn = false;
       refreshDisplay();
     })
-    .catch(function (error) {});
+    .catch(function (error) {
+      displaySigningIn("end");
+    });
 }
 
 function upToFb(name, item) {
