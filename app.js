@@ -9,11 +9,9 @@ window.onload = function () {
     userTest().then(() => {
       if (loggedIn) {
         refreshDisplay().then(() => {
-          displaySigningIn("end");
           displaySignedIn();
         });
       } else {
-        displaySigningIn("end");
         refreshDisplay();
       }
     });
@@ -102,6 +100,8 @@ function refreshDisplay() {
 
   function afterPullItems() {
     removeCurrentLib();
+    if (loggedIn || sessionStorage.getItem("google pending"))
+      displaySigningIn("end");
     displayLibrary();
     checkBookCtn();
   }
@@ -967,7 +967,6 @@ function onSubmitSignIn() {
       displaySigningIn("start", "vet");
       loggedIn = true;
       refreshDisplay().then((result) => {
-        displaySigningIn("end");
         displaySignedIn();
         displayMessage("you're in!", "success");
       });
@@ -1021,7 +1020,6 @@ function googleOnRedirect() {
       if (result.additionalUserInfo.isNewUser) {
         refreshDisplay();
         loggedIn = true;
-        displaySigningIn("end");
         displaySignedIn();
         displayMessage("you're in!", "success");
         set("library", myLibrary);
@@ -1029,7 +1027,6 @@ function googleOnRedirect() {
       } else {
         loggedIn = true;
         refreshDisplay().then((result) => {
-          displaySigningIn("end");
           displaySignedIn();
           displayMessage("you're in!", "success");
         });
