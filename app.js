@@ -137,6 +137,9 @@ function addBookToLibrary() {
   const bookTitle = newBookForm.querySelector("input[name = book-title]").value;
   const bookAuthor = newBookForm.querySelector("input[name = author]").value;
   const bookPages = newBookForm.querySelector("input[name = pages-read]").value;
+
+  if (!bookPages) bookPages = " ";
+
   let bookStatus;
   const readRadio = newBookForm.querySelectorAll("input[name = read]");
   for (i = 0; i < readRadio.length; i++) {
@@ -223,11 +226,13 @@ function displayBook(a) {
     const bookDisplayTitle = document.createElement("p");
     bookDisplayTitle.classList.add("book-display-title");
     bookDisplayTitle.innerHTML = `<span>${a.title}</span>`;
+    if (!a.title) bookDisplayTitle.innerHTML = `<span>&nbsp</span>`;
     bookDisplayTitle.style.borderLeft = `5px solid ${a.accent}`;
 
     const bookDisplayAuthor = document.createElement("p");
     bookDisplayAuthor.classList.add("book-display-author");
     bookDisplayAuthor.innerHTML = `<span>${a.author}</span>`;
+    if (!a.author) bookDisplayAuthor.innerHTML = `<span>&nbsp</span>`;
 
     return [bookDisplayTitle, bookDisplayAuthor];
   }
@@ -270,6 +275,7 @@ function displayBook(a) {
     const bookDisplayPagesNum = document.createElement("p");
     bookDisplayPagesNum.classList.add("book-display-pages-num");
     bookDisplayPagesNum.innerHTML = `<span>${a.pages}</span>`;
+    if (!a.pages) bookDisplayPagesNum.innerHTML = `<span>&nbsp</span>`;
     bookDisplayPages.appendChild(bookDisplayPagesNum);
 
     return bookDisplayPages;
@@ -922,6 +928,7 @@ function onSubmitSignUp() {
   if (!signUpInfo[0]) {
     incompleteFields(signUpForm);
   } else {
+    if (loggedIn) firebase.auth().signOut();
     resetModalAndForm(modalSignUp, "signup");
     displaySigningIn("start", "first time");
     firebase
@@ -964,6 +971,7 @@ signInPw.addEventListener("keyup", (e) => {
     }, 100);
 });
 function onSubmitSignIn() {
+  if (loggedIn) firebase.auth().signOut();
   firebase
     .auth()
     .signInWithEmailAndPassword(signInEmail.value, signInPw.value)
@@ -1005,11 +1013,14 @@ function resetPw() {
     .then(function () {
       displayMessage("reset password email sent", "success");
     })
-    .catch(function (error) {});
+    .catch(function (error) {
+      displayMessage(error, "error");
+    });
 }
 function signInGoogle() {
   var provider = new firebase.auth.GoogleAuthProvider();
   sessionStorage.setItem("google pending", "pending");
+  if (loggedIn) firebase.auth().signOut();
   firebase.auth().signInWithRedirect(provider);
 }
 function googleOnRedirect() {
@@ -1059,7 +1070,7 @@ function displaySigningIn(state, virgin) {
   const firstSessImg = loading.querySelector("#first-session");
   const vetUserImg = loading.querySelector("#vet-user");
   const text = loading.querySelector("#signing-in-text");
-  const dotDotDot = Array.from(loading.querySelectorAll(".fade-animate"));
+  const dotDotDot = loading.querySelectorAll(".fade-animate");
 
   var startAnimate;
 
@@ -1158,6 +1169,7 @@ function signOut() {
       refreshDisplay();
     })
     .catch(function (error) {
+      displayMessage(error, "error");
       displaySigningIn("end");
     });
 }
@@ -1187,6 +1199,7 @@ function dlFromFb(name) {
         xhr.send();
       })
       .catch(function (error) {
+        displayMessage(error, "error");
         return {};
       });
   });

@@ -447,6 +447,10 @@ form[name="signup"] div {
   height: 29rem;
   overflow-x: auto;
   scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.book-ctn::-webkit-scrollbar {
+  display: none;
 }
 .nothing-here {
   margin: 0 auto;
