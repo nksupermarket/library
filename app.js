@@ -138,8 +138,6 @@ function addBookToLibrary() {
   const bookAuthor = newBookForm.querySelector("input[name = author]").value;
   const bookPages = newBookForm.querySelector("input[name = pages-read]").value;
 
-  if (!bookPages) bookPages = " ";
-
   let bookStatus;
   const readRadio = newBookForm.querySelectorAll("input[name = read]");
   for (i = 0; i < readRadio.length; i++) {
