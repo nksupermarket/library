@@ -59,7 +59,7 @@ function get(name) {
 
   loggedIn
     ? (item = dlFromFb(name))
-    : local
+    : localStorage.name
     ? (item = JSON.parse(localStorage.getItem(name)))
     : (item = null);
 
@@ -102,7 +102,9 @@ function refreshDisplay() {
 
   function afterPullItems() {
     removeCurrentLib();
-    displayLibrary();
+    myLibrary.length === 0
+      ? displaySampleBook(sampleCounter.value)
+      : displayLibrary();
     checkBookCtn();
   }
 }
@@ -236,7 +238,7 @@ function displayBook(a) {
   }
 
   const firstPageContents = displayFirstPage();
-  if (firstPageContents[0].textContent.includes("sample book"))
+  if (firstPageContents[0].textContent.includes("sample bosampleok"))
     bookWrapper.classList.add("sample-book");
 
   firstPage.appendChild(firstPageContents[0]);
@@ -286,9 +288,8 @@ function displayBook(a) {
     const bookDisplayCoverText = bookDisplayCover.children[0];
     const bookDisplayCoverLabel = bookDisplayCover.querySelectorAll("label");
     for (i = 0; i < bookDisplayCoverLabel.length; i++) {
-      const bookDisplayCoverName = bookDisplayCoverLabel[i].querySelector(
-        "span"
-      );
+      const bookDisplayCoverName =
+        bookDisplayCoverLabel[i].querySelector("span");
       bookDisplayCoverName.style.display = "none";
     }
 
@@ -312,9 +313,8 @@ function displayBook(a) {
     const bookDisplayAccentText = bookDisplayAccent.children[0];
     const bookDisplayAccentLabel = bookDisplayAccent.querySelectorAll("label");
     for (i = 0; i < bookDisplayAccentLabel.length; i++) {
-      const bookDisplayAccentName = bookDisplayAccentLabel[i].querySelector(
-        "span"
-      );
+      const bookDisplayAccentName =
+        bookDisplayAccentLabel[i].querySelector("span");
       bookDisplayAccentName.style.display = "none";
     }
 
@@ -607,11 +607,13 @@ function bulkUpdate() {
     bulkUpdateChecked[i].checked = false;
   }
 
-  const bookTitle = bulkEditForm.querySelector("input[name = book-title]")
-    .value;
+  const bookTitle = bulkEditForm.querySelector(
+    "input[name = book-title]"
+  ).value;
   const bookAuthor = bulkEditForm.querySelector("input[name = author]").value;
-  const bookPages = bulkEditForm.querySelector("input[name = pages-read]")
-    .value;
+  const bookPages = bulkEditForm.querySelector(
+    "input[name = pages-read]"
+  ).value;
   let bookStatus;
   const readRadio = bulkEditForm.querySelectorAll("input[name = read]");
   for (i = 0; i < readRadio.length; i++) {
@@ -720,17 +722,15 @@ const nextModalBtns = newBookForm.querySelectorAll(".next-modal");
 let modalNumber = 0;
 nextModalBtns.forEach((btn) => {
   btn.addEventListener("click", () => {
-    const currentModal = newBookForm.querySelectorAll(".modal-sequence")[
-      modalNumber
-    ];
+    const currentModal =
+      newBookForm.querySelectorAll(".modal-sequence")[modalNumber];
     if (validateForm() === true) {
       if (btn.value === "Submit") {
         resetModalAndForm(modal, "new-book");
         return;
       }
-      const nextModal = newBookForm.querySelectorAll(".modal-sequence")[
-        ++modalNumber
-      ];
+      const nextModal =
+        newBookForm.querySelectorAll(".modal-sequence")[++modalNumber];
       currentModal.classList.remove("active-modal");
       nextModal.classList.add("active-modal");
     } else {
@@ -741,12 +741,10 @@ nextModalBtns.forEach((btn) => {
 const backModalBtns = newBookForm.querySelectorAll(".back-modal");
 backModalBtns.forEach((btn) => {
   btn.addEventListener("click", () => {
-    const currentModal = newBookForm.querySelectorAll(".modal-sequence")[
-      modalNumber
-    ];
-    const prevModal = newBookForm.querySelectorAll(".modal-sequence")[
-      --modalNumber
-    ];
+    const currentModal =
+      newBookForm.querySelectorAll(".modal-sequence")[modalNumber];
+    const prevModal =
+      newBookForm.querySelectorAll(".modal-sequence")[--modalNumber];
 
     currentModal.classList.remove("active-modal");
     prevModal.classList.add("active-modal");

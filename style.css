@@ -361,7 +361,7 @@ form[name="signup"] div {
 .add-new-btn {
   height: 22px;
   max-width: 21px;
-  width: 115px;
+  width: 145px;
   line-height: 20px;
   margin: -8px 0 0 1rem;
   font-weight: bold;
@@ -390,7 +390,7 @@ form[name="signup"] div {
 .sign-in-btn:hover,
 .bulk-btn:hover,
 .add-new-btn:hover {
-  max-width: 115px;
+  max-width: 145px;
   animation: btn-shake 0.2s infinite;
 }
 .sign-in-btn:active,
