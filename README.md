@@ -27,4 +27,5 @@ live: https://lookingcoolonavespa.github.io/library/
 - font awesome: for icons
 
 ## challenges i faced
-- 
+- **Drag and drop** - 
+- **Firebase** - 
