@@ -25,7 +25,6 @@ live: https://lookingcoolonavespa.github.io/library/
 ## resources i used
 - https://absurd.design/: for illustrations
 - font awesome: for icons
-icons: Font Kit Awesome
 
 ## challenges i faced
 - 
