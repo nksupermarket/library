@@ -27,5 +27,5 @@ live: https://lookingcoolonavespa.github.io/library/
 - font awesome: for icons
 
 ## challenges i faced
-- **Drag and drop** - 
-- **Firebase** - 
+- **Drag and drop** - wrestling with the drag and drop api forced me to understand the whats, whys, and hows of events in javascript. 
+- **Firebase** - this was my first foray into third-party apis. Getting used to reading documentation and learning how to mesh my code with firebase was definitely a learning experience.
